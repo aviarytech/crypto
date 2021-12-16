@@ -1,0 +1,7 @@
+{
+  "type": "JsonWebSignature2020",
+  "proofPurpose": "assertionMethod",
+  "created": "2021-11-25T23:28:31Z",
+  "verificationMethod": "did:example:123#key-1",
+  "jws": "eyJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdLCJhbGciOiJFUzI1NksifQ..qckXOnj8LXFGqqknJJ6DLBq3289x7IBH1H-ERtwJb4Yt09VS22y_LoUOMHUSdFvmJsfK2632neb03EXJjUL-pA"
+}

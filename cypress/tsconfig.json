@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "target": "esnext",
+      "lib": ["esnext", "dom"],
+      "moduleResolution": "node",
+      "types": ["cypress", "node"],
+      "experimentalDecorators": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "baseUrl": "",
+    },
+    "include": ["**/*.ts", "tests/JsonWebKey2020.spec.ts", "tests/X25519KeyAgreementKey2019.spec.ts", "tests/Secp256k1KeyPair.spec.ts", "tests/JWS.spec.ts", "tests/JWE.spec.js"]
+  }
