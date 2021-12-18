@@ -23,9 +23,11 @@ export class JsonWebSignature2020LinkedDataProof extends LinkedDataProof {
 		proofPurpose: string,
 		verificationMethod: string,
 		created: string,
-		jws?: string
+		jws?: string,
+		challenge?: string,
+		domain?: string
 	) {
-		super(type, proofPurpose, verificationMethod, created);
+		super(type, proofPurpose, verificationMethod, challenge, domain, created);
 		this.jws = jws;
 	}
 }
@@ -108,7 +110,14 @@ export class JsonWebSignature2020Suite {
 		if (!this.verificationMethod) {
 			throw new Error("No verificationMethod, Can't create proof");
 		}
-		let proof = new LinkedDataProof(this.type, purpose, this.verificationMethod, challenge, domain);
+		let proof = new JsonWebSignature2020LinkedDataProof(
+			this.type,
+			purpose,
+			this.verificationMethod,
+			null,
+			challenge,
+			domain
+		);
 
 		// create data to sign
 		const verifyData = await this.createVerifyData({

@@ -45,4 +45,8 @@ export class LinkedDataProof {
 		}
 		return true;
 	}
+
+	toJSON() {
+		return JSON.parse(JSON.stringify(this));
+	}
 }
