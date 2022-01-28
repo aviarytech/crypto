@@ -133,6 +133,7 @@ export class JsonWebSignature2020Suite {
 			purpose,
 			this.verificationMethod,
 			null,
+			null,
 			options.challenge,
 			options.domain
 		);
