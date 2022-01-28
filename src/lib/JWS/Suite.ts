@@ -123,7 +123,7 @@ export class JsonWebSignature2020Suite {
 		document: any,
 		purpose: string,
 		documentLoader: DocumentLoader,
-		options: { domain: string; challenge: string }
+		options?: { domain?: string; challenge?: string }
 	): Promise<JsonWebSignature2020LinkedDataProof> {
 		if (!this.verificationMethod) {
 			throw new Error("No verificationMethod, Can't create proof");
@@ -134,8 +134,8 @@ export class JsonWebSignature2020Suite {
 			this.verificationMethod,
 			null,
 			null,
-			options.challenge,
-			options.domain
+			options ? options.challenge : null,
+			options ? options.domain : null
 		);
 
 		// create data to sign
