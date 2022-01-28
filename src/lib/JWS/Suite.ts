@@ -30,6 +30,25 @@ export class JsonWebSignature2020LinkedDataProof extends LinkedDataProof {
 		super(type, proofPurpose, verificationMethod, challenge, domain, created);
 		this.jws = jws;
 	}
+
+	toJSON() {
+		let val: any = {
+			type: this.type,
+			proofPurpose: this.proofPurpose,
+			verificationMethod: this.verificationMethod,
+			created: this.created
+		};
+		if (this.jws) {
+			val.jws = this.jws;
+		}
+		if (this.challenge) {
+			val.challenge = this.challenge;
+		}
+		if (this.domain) {
+			val.domain = this.domain;
+		}
+		return val;
+	}
 }
 
 export class JsonWebSignature2020Suite {
@@ -104,8 +123,7 @@ export class JsonWebSignature2020Suite {
 		document: any,
 		purpose: string,
 		documentLoader: DocumentLoader,
-		domain?: string,
-		challenge?: string
+		options: { domain: string; challenge: string }
 	): Promise<JsonWebSignature2020LinkedDataProof> {
 		if (!this.verificationMethod) {
 			throw new Error("No verificationMethod, Can't create proof");
@@ -115,8 +133,8 @@ export class JsonWebSignature2020Suite {
 			purpose,
 			this.verificationMethod,
 			null,
-			challenge,
-			domain
+			options.challenge,
+			options.domain
 		);
 
 		// create data to sign
@@ -128,7 +146,15 @@ export class JsonWebSignature2020Suite {
 
 		// sign data
 		const sig = await this.sign(verifyData);
-		return { ...proof, jws: sig };
+		return new JsonWebSignature2020LinkedDataProof(
+			proof.type,
+			proof.proofPurpose,
+			proof.verificationMethod,
+			proof.created,
+			sig,
+			proof.challenge,
+			proof.domain
+		);
 	}
 
 	async sign(verifyData: Uint8Array): Promise<string> {
