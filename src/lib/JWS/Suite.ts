@@ -149,7 +149,7 @@ export class JsonWebSignature2020Suite {
 		const sig = await this.sign(verifyData);
 		proof.jws = sig;
 
-		return proof;
+		return proof.toJSON();
 	}
 
 	async sign(verifyData: Uint8Array): Promise<string> {
