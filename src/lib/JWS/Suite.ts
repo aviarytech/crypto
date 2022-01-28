@@ -147,15 +147,9 @@ export class JsonWebSignature2020Suite {
 
 		// sign data
 		const sig = await this.sign(verifyData);
-		return new JsonWebSignature2020LinkedDataProof(
-			proof.type,
-			proof.proofPurpose,
-			proof.verificationMethod,
-			proof.created,
-			sig,
-			proof.challenge,
-			proof.domain
-		);
+		proof.jws = sig;
+
+		return proof;
 	}
 
 	async sign(verifyData: Uint8Array): Promise<string> {
