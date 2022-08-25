@@ -122,8 +122,8 @@ export class KeyEncryptionKey {
 			const ephemeralPublicKey = {
 				type: 'JsonWebKey2020',
 				publicKeyJwk: epk,
-				id: null,
-				controller: null
+				id: epk,
+				controller: epk
 			};
 
 			const epkPair = await X25519KeyPair.fromJWK(ephemeralPublicKey);

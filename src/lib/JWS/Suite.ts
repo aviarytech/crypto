@@ -1,6 +1,6 @@
 import jsonld from 'jsonld';
 import { Buffer } from 'buffer/index.js';
-import type { DocumentLoader } from '$lib/interfaces.js';
+import type { DocumentLoader } from '$lib';
 import { LinkedDataProof } from '$lib/LDP/proof.js';
 import { JsonWebKey } from '$lib/keypairs/JsonWebKey2020.js';
 import { sha256buffer } from '$lib/utils/sha256.js';
@@ -238,8 +238,8 @@ export class JsonWebSignature2020Suite {
 			}
 
 			return { verified: true };
-		} catch (error) {
-			return { verified: false, error: error.message };
+		} catch (error: any) {
+			return { verified: false, errors: [error.message] };
 		}
 	}
 }

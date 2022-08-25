@@ -2,6 +2,7 @@
  * Copyright (c) 2019-2020 Digital Bazaar, Inc. All rights reserved.
  */
 import { XChaCha20Poly1305, KEY_LENGTH } from "@stablelib/xchacha20poly1305";
+import { randomBytes } from "@stablelib/random"
 
 export const JWE_ENC = "XC20P";
 
@@ -13,8 +14,7 @@ export const JWE_ENC = "XC20P";
  */
 export async function generateKey() {
   // generate content encryption key
-
-  return crypto.getRandomValues(new Uint8Array(KEY_LENGTH));
+  return randomBytes(KEY_LENGTH)
 }
 
 /**
@@ -43,7 +43,7 @@ export async function encrypt({ data, additionalData, cek }: any) {
   // recipients may be trying to update at the same time and use the same
   // counter breaking security; using XChaCha20Poly1305 once available will
   // further reduce chances of a collision as it has a 192-bit IV
-  const iv = crypto.getRandomValues(new Uint8Array(cipher.nonceLength));
+  const iv = randomBytes(cipher.nonceLength)
 
   // encrypt data
   const encrypted = cipher.seal(iv, data, additionalData);

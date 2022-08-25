@@ -1,4 +1,4 @@
-import * as secp from 'noble-secp256k1';
+import * as secp from '@noble/secp256k1';
 import { Buffer } from 'buffer/index.js';
 
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';

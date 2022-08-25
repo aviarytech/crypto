@@ -1,8 +1,9 @@
-import { expect } from 'chai';
-import { X25519KeyPair, base58, base64url } from '../../src/lib';
+import { X25519KeyPair } from '$lib/keypairs/X25519KeyAgreementKey2019';
+import { base58, base64url } from '$lib/utils/encoding';
+import { describe, expect, test } from 'vitest';
 
 describe('X25519KeyAgreementKey2019', () => {
-	it('resolves as JWK', async () => {
+	test('resolves as JWK', async () => {
 		const x25519key = require('../fixtures/X25519KeyAgreementKey2019.json');
 
 		const key = new X25519KeyPair(
@@ -21,7 +22,7 @@ describe('X25519KeyAgreementKey2019', () => {
 		});
 	});
 
-	it('w/o private key resolves as JWK', async () => {
+	test('w/o private key resolves as JWK', async () => {
 		let x25519key = require('../fixtures/X25519KeyAgreementKey2019.json');
 		delete x25519key['privateKeyBase58'];
 

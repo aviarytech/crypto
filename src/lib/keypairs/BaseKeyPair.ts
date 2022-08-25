@@ -23,11 +23,11 @@ export interface BaseKeyPair {
 	controller: string;
 	JWA?: string;
 
-	signer?: (privateKey: Uint8Array) => { sign: ({ data }: { data: Uint8Array }) => {} };
-	sign?: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;
+	signer: (privateKey: Uint8Array) => { sign: ({ data }: { data: Uint8Array }) => {} };
+	sign: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;
 
 	verifier?: (publicKey: Uint8Array) => {
 		verify: ({ data, signature }: { data: Uint8Array; signature: Uint8Array }) => Promise<boolean>;
 	};
-	verify?: ({ data, signature }: { data: Uint8Array; signature: Uint8Array }) => Promise<boolean>;
+	verify: ({ data, signature }: { data: Uint8Array; signature: Uint8Array }) => Promise<boolean>;
 }

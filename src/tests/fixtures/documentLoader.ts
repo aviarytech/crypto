@@ -5,6 +5,7 @@ import dids from "./contexts/dids.json";
 import odrl from "./contexts/odrl.json";
 import controller from "./controller.json";
 import vax from "./contexts/vaccination.json";
+import type { DocumentLoader } from "$lib";
 
 const documents = {
   "https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json": jws,
@@ -15,7 +16,7 @@ const documents = {
   "https://w3id.org/vaccination/v1": vax,
 };
 
-export const documentLoader = async (iri: string) => {
+export const documentLoader = async (iri: string): Promise<{ document: any; documentUrl: string; contextUrl: string | null }> => {
   try {
     if (iri.startsWith("did:example:123")) {
       return {
@@ -31,6 +32,10 @@ export const documentLoader = async (iri: string) => {
     };
   } catch (e) {
     console.error(e, iri);
-    return null;
+    return {
+      document: null,
+      documentUrl: iri,
+      contextUrl: null
+    };
   }
 };
