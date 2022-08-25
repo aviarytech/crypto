@@ -19,7 +19,6 @@ const config = {
 			'b58',
 			'@stablelib/aes-kw',
 			'jsonld',
-			'noble-secp256k1'
 		]
 	}
 };

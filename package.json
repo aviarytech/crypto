@@ -19,6 +19,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@noble/secp256k1": "^1.6.3",
 		"@stablelib/aes-kw": "^1.0.1",
 		"@stablelib/ed25519": "^1.0.2",
 		"@stablelib/random": "^1.0.2",
@@ -29,7 +30,6 @@
 		"buffer": "^6.0.3",
 		"jose": "^4.9.0",
 		"jsonld": "^5.2.0",
-		"noble-secp256k1": "^1.2.14",
 		"vitest": "^0.22.1"
 	},
 	"devDependencies": {
