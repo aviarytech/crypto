@@ -1,11 +1,11 @@
-import { expect } from 'chai';
-import { X25519KeyPair, JsonWebEncryptionSuite } from '../../src/lib';
+import { describe, expect, test } from 'vitest';
+import { X25519KeyPair, JsonWebEncryptionSuite } from '$lib';
 
 const plaintext = require('../fixtures/plaintext.json');
 const jwe = require('../fixtures/jwe.json');
 const key = require('../fixtures/X25519KeyAgreementKey2019.json');
 describe('JWE', () => {
-	it('Can encrypt data', async () => {
+	test('Can encrypt data', async () => {
 		const cipher = new JsonWebEncryptionSuite();
 		const recipients = [
 			{
@@ -29,7 +29,7 @@ describe('JWE', () => {
 		expect(result).to.have.property('tag');
 	});
 
-	it('Can decrypt data', async () => {
+	test('Can decrypt data', async () => {
 		const cipher = new JsonWebEncryptionSuite();
 		const keyAgreementKey = new X25519KeyPair(
 			key.id,

@@ -1,9 +1,10 @@
-import { EcdsaSecp256k1KeyPair } from '../../src/lib';
+import { EcdsaSecp256k1KeyPair } from "$lib";
+import { describe, expect, test } from "vitest"
 
 const key = require('../fixtures/EcdsaSecp256k1VerificationKey2019.json');
 
 describe('Secp256k1 KeyPair tests', () => {
-	it('should construct from object', async () => {
+	test('should construct from object', async () => {
 		const keypair = await EcdsaSecp256k1KeyPair.from(key);
 
 		expect(keypair.id).to.equal(key.id);
@@ -13,7 +14,7 @@ describe('Secp256k1 KeyPair tests', () => {
 		expect(keypair.controller).to.equal(key.controller);
 	});
 
-	it('should sign and verify', async () => {
+	test('should sign and verify', async () => {
 		const msg = 'hello tester';
 		const encoder = new TextEncoder();
 		const encodedMsg = encoder.encode(msg);
@@ -25,13 +26,13 @@ describe('Secp256k1 KeyPair tests', () => {
 		expect(verified).to.be.true;
 	});
 
-	it('generates', async () => {
+	test('generates', async () => {
 		let keypair = await EcdsaSecp256k1KeyPair.generate();
 		expect(keypair).to.have.property('privateKey');
 		expect(keypair).to.have.property('publicKey');
 	});
 
-	it('exports as JWK', async () => {
+	test('exports as JWK', async () => {
 		const keypair = await EcdsaSecp256k1KeyPair.generate();
 		const jwk = await keypair.export({
 			privateKey: true,

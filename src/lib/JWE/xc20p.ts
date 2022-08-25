@@ -2,6 +2,7 @@
  * Copyright (c) 2019-2020 Digital Bazaar, Inc. All rights reserved.
  */
 import { XChaCha20Poly1305, KEY_LENGTH } from "@stablelib/xchacha20poly1305";
+import { randomStringForEntropy } from "@stablelib/random"
 
 export const JWE_ENC = "XC20P";
 
@@ -13,8 +14,7 @@ export const JWE_ENC = "XC20P";
  */
 export async function generateKey() {
   // generate content encryption key
-
-  return crypto.getRandomValues(new Uint8Array(KEY_LENGTH));
+  return randomStringForEntropy(128)
 }
 
 /**

@@ -3,7 +3,7 @@ import { KeyEncryptionKey } from '$lib/JWE/KeyEncryptionKey.js';
 import { EncryptTransformer } from '$lib/JWE/EncryptTransformer.js';
 import { DecryptTransformer } from '$lib/JWE/DecryptTransformer.js';
 import { Buffer } from 'buffer/index.js';
-import type { Header, IJWE } from '$lib/interfaces.js';
+import type { Header, IJWE } from '$lib';
 import { X25519KeyPair } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { JsonWebKey } from '$lib/keypairs/JsonWebKey2020.js';
 import { base64url } from '$lib/utils/encoding.js';

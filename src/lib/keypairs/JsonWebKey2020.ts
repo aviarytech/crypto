@@ -1,4 +1,4 @@
-import type { IJWK } from "$lib/interfaces.js";
+import type { IJWK } from "$lib";
 import { createJWSSigner } from "$lib/JWS/createSigner.js";
 import { createJWSVerifier } from "$lib/JWS/createVerifier.js";
 import type { BaseKeyPair } from "$lib/keypairs/BaseKeyPair.js";

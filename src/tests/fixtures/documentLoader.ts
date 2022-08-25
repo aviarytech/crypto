@@ -5,6 +5,7 @@ import dids from "./contexts/dids.json";
 import odrl from "./contexts/odrl.json";
 import controller from "./controller.json";
 import vax from "./contexts/vaccination.json";
+import { DocumentLoader } from "$lib";
 
 const documents = {
   "https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json": jws,
