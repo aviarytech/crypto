@@ -1,13 +1,13 @@
 import type { JWA_ALG } from "$lib/constants";
 import type { JWTPayload, VerificationResult } from "$lib/interfaces";
-import type { JsonWebKey } from '$lib/keypairs/JsonWebKey2020.js';
-import { SignJWT, jwtVerify, exportJWK, importJWK } from "jose"
+import type { JsonWebKey2020 } from "$lib/keypairs/JsonWebKey2020";
+import { SignJWT, jwtVerify, importJWK } from "jose"
 
 export class JWTSuite {
-    public key: JsonWebKey;
+    public key: JsonWebKey2020;
     public alg: string;
 
-    constructor(options: {key: JsonWebKey, alg?: JWA_ALG}) {
+    constructor(options: {key: JsonWebKey2020, alg?: JWA_ALG}) {
         if (options.key) {
             this.key = options.key;
         } else {

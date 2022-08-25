@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
+		"module": "ESNext",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,

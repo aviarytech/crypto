@@ -7,7 +7,7 @@ import { sha256Uint8Array } from '$lib/utils/sha256.js';
 import { base58, base64url } from '$lib/utils/encoding.js';
 import { SECP256K1_MULTICODEC_IDENTIFIER } from '$lib/constants.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
-import { JsonWebKey, JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { JsonWebKey, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 export interface EcdsaSecp256k1VerificationKey2019 extends BaseKeyPair {
 	id: string;
