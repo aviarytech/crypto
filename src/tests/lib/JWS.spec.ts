@@ -36,7 +36,7 @@ describe('JWS', () => {
 	});
 
 	test(`Can create proof w/ challenge`, async () => {
-		const credential = require(`./fixtures/credentials/case-1.json`);
+		const credential = require(`../fixtures/credentials/case-1.json`);
 		const key = await JsonWebKey.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
@@ -73,7 +73,7 @@ describe('JWS', () => {
 	});
 
 	test(`Can create proof w/ challenge & domain`, async () => {
-		const credential = require(`./fixtures/credentials/case-1.json`);
+		const credential = require(`../fixtures/credentials/case-1.json`);
 		const key = await JsonWebKey.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,

@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest';
 
 describe('X25519KeyAgreementKey2019', () => {
 	test('resolves as JWK', async () => {
-		const x25519key = require('./fixtures/X25519KeyAgreementKey2019.json');
+		const x25519key = require('../fixtures/X25519KeyAgreementKey2019.json');
 
 		const key = new X25519KeyPair(
 			x25519key.id,
@@ -23,7 +23,7 @@ describe('X25519KeyAgreementKey2019', () => {
 	});
 
 	test('w/o private key resolves as JWK', async () => {
-		let x25519key = require('./fixtures/X25519KeyAgreementKey2019.json');
+		let x25519key = require('../fixtures/X25519KeyAgreementKey2019.json');
 		delete x25519key['privateKeyBase58'];
 
 		const key = new X25519KeyPair(
