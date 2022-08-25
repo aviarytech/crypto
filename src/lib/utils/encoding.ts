@@ -10,6 +10,15 @@ export const base64 = {
 	}
 };
 
+export const utf8 = {
+	encode: (unencoded: string): Uint8Array => {
+		return new TextEncoder().encode(unencoded)
+	},
+	decode: (encoded: Uint8Array): string => {
+		return new TextDecoder().decode(encoded);
+	} 
+}
+
 export const base64url = {
 	encode: (unencoded: Uint8Array): string => {
 		var encoded = base64.encode(unencoded);

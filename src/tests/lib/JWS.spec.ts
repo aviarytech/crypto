@@ -1,12 +1,13 @@
 import { describe, expect, test } from 'vitest';
 
 import { Buffer } from 'buffer/index.js';
-import { JsonWebKey, JsonWebSignature2020Suite } from '$lib/keypairs/JsonWebKey2020';
+import { JsonWebKey } from '$lib/keypairs/JsonWebKey2020';
 import { documentLoader } from '../fixtures/documentLoader';
+import { JsonWebSignature2020Suite } from '$lib/JWS/Suite';
 
-const plaintext = require('./fixtures/plaintext.json');
-const jwk2020 = require('./fixtures/JsonWebKey2020.json');
-const jws = require('./fixtures/jws.json');
+const plaintext = require('../fixtures/plaintext.json');
+const jwk2020 = require('../fixtures/JsonWebKey2020.json');
+const jws = require('../fixtures/jws.json');
 
 describe('JWS', () => {
 	test('Can sign data', async () => {

@@ -33,7 +33,6 @@ export class JsonWebEncryptionSuite {
 				}
 
 				const cek = await generateKey();
-
 				const publicKeys = await Promise.all(
 					recipients.map((e) => publicKeyResolver(e.header.kid))
 				);

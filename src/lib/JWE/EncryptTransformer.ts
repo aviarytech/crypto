@@ -1,7 +1,13 @@
 /*!
  * Copyright (c) 2019-2020 Digital Bazaar, Inc. All rights reserved.
  */
-import { base64url } from '$lib/utils/encoding.js';
+import * as cipher from '$lib/JWE/xc20p.js';
+
+import { base64url, utf8 } from '$lib/utils/encoding.js';
+
+const CIPHER_ALGORITHMS: any = {
+	[cipher.JWE_ENC]: cipher
+};
 
 // 1 MiB = 1048576
 const DEFAULT_CHUNK_SIZE = 1048576;
@@ -9,7 +15,6 @@ const DEFAULT_CHUNK_SIZE = 1048576;
 export class EncryptTransformer {
 	public recipients: any;
 	public encodedProtectedHeader: any;
-	public cipher: any;
 	public additionalData: any;
 	public cek: any;
 	public chunkSize: any;
@@ -90,8 +95,11 @@ export class EncryptTransformer {
 	}
 
 	async encrypt(data: any) {
-		const { cipher, additionalData, cek } = this;
-		const { ciphertext, iv, tag } = await cipher.encrypt({
+		const { additionalData, cek, encodedProtectedHeader } = this;
+		const protectedHeader = JSON.parse(utf8.decode(base64url.decode(encodedProtectedHeader)))
+		const suite = CIPHER_ALGORITHMS[protectedHeader.enc];
+
+		const { ciphertext, iv, tag } = await suite.encrypt({
 			data,
 			additionalData,
 			cek

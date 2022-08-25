@@ -40,7 +40,6 @@ export const createJWSSigner = (
 				: new Uint8Array(Buffer.from(`${encodedHeader}.${encodedPayload}`));
 
 			const message = toBeSigned as any;
-			console.log(signer);
 			const signature = await signer.sign({ data: message });
 
 			return options.detached
