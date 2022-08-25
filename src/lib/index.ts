@@ -1,6 +1,7 @@
 export * from '$lib/interfaces.js';
 export * from '$lib/JWE/Suite.js';
 export * from '$lib/JWS/Suite.js';
+export * from "$lib/JWT/Suite.js";
 
 export * from '$lib/keypairs/BaseKeyPair.js';
 export * from '$lib/keypairs/JsonWebKey2020.js';
