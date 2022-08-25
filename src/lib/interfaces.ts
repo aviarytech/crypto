@@ -1,5 +1,16 @@
 import type { LinkedDataProof } from '$lib/LDP/proof.js';
 
+export interface JWTPayload {
+    iss?: string;
+    sub?: string;
+    aud?: string;
+    exp?: number;
+    nbf?: number;
+    iat?: number;
+    jt?: string;
+    [x: string]: any;
+}
+
 export interface Header {
 	typ?: string;
 	alg: string;
@@ -27,7 +38,7 @@ export interface IJWS {
 
 export interface IJWK {
 	alg?: string;
-	crv?: string;
+	crv: string;
 	d?: string;
 	dp?: string;
 	dq?: string;
@@ -36,7 +47,7 @@ export interface IJWK {
 	k?: string;
 	key_ops?: string[];
 	kid?: string;
-	kty?: string;
+	kty: string;
 	n?: string;
 	oth?: Array<{
 		d?: string;
@@ -53,11 +64,12 @@ export interface IJWK {
 	x5t?: string;
 	'x5t#S256'?: string;
 	x5u?: string;
+	[propName: string]: unknown
 }
 
-export interface ProofVerificationResult {
+export interface VerificationResult {
 	verified: boolean;
-	error?: string;
+	errors: string[];
 }
 
 export type DocumentLoader = (
@@ -81,5 +93,5 @@ export interface LinkedDataSuite {
 		proofDocument: LinkedDataProof,
 		document: any,
 		documentLoader: DocumentLoader
-	) => Promise<ProofVerificationResult>;
+	) => Promise<VerificationResult>;
 }

@@ -238,8 +238,8 @@ export class JsonWebSignature2020Suite {
 			}
 
 			return { verified: true };
-		} catch (error) {
-			return { verified: false, error: error.message };
+		} catch (error: any) {
+			return { verified: false, errors: [error.message] };
 		}
 	}
 }

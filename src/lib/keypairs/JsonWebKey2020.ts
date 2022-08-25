@@ -210,7 +210,7 @@ export class JsonWebKey implements JsonWebKey2020 {
 			this.id,
 			this.controller,
 			this.publicKeyJwk,
-			options.privateKey ? this.privateKeyJwk : null
+			options.privateKey ? this.privateKeyJwk : undefined
 		);
 	}
 

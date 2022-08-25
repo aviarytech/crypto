@@ -27,6 +27,7 @@
 		"@stablelib/xchacha20poly1305": "^1.0.1",
 		"b58": "^4.0.3",
 		"buffer": "^6.0.3",
+		"jose": "^4.9.0",
 		"jsonld": "^5.2.0",
 		"noble-secp256k1": "^1.2.14",
 		"vitest": "^0.22.1"
