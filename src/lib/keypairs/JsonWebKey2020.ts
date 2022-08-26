@@ -158,8 +158,8 @@ export interface JsonWebKey2020 extends BaseKeyPair {
 	controller: string;
 	publicKeyJwk: IJWK;
 	privateKeyJwk?: IJWK;
-	export: (options: {privateKey?: boolean}) => Promise<JsonWebKeyPair>
-	exportAsLD: (options: {privateKey?: boolean}) => Promise<BaseKeyPair>
+	export?: (options: {privateKey?: boolean}) => Promise<JsonWebKeyPair>
+	exportAsLD?: (options: {privateKey?: boolean}) => Promise<BaseKeyPair>
 }
 
 export class JsonWebKeyPair implements JsonWebKey2020 {
