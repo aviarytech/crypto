@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test} from 'vitest'
-import { JsonWebKey } from '../../lib';
+import { JsonWebKeyPair } from '../../lib';
 
 let jwk2020: any;
 
@@ -8,7 +8,7 @@ describe('JsonWebKey2020', () => {
 		jwk2020 = require('../fixtures/JsonWebKey2020.json');
 	})
 	test('resolves as JWK', async () => {
-		const jwk = new JsonWebKey(
+		const jwk = new JsonWebKeyPair(
 			jwk2020.id,
 			jwk2020.controller,
 			jwk2020.publicKeyJwk,
@@ -24,7 +24,7 @@ describe('JsonWebKey2020', () => {
 	test('w/o private key resolves as JWK', async () => {
 		const { privateKeyJwk, ...newjwk } = jwk2020;
 
-		const jwk = new JsonWebKey(
+		const jwk = new JsonWebKeyPair(
 			newjwk.id,
 			newjwk.controller,
 			newjwk.publicKeyJwk,
@@ -38,7 +38,7 @@ describe('JsonWebKey2020', () => {
 	});
 
 	test('exports as LD', async () => {
-		const jwk = new JsonWebKey(
+		const jwk = new JsonWebKeyPair(
 			jwk2020.id,
 			jwk2020.controller,
 			jwk2020.publicKeyJwk,
@@ -56,7 +56,7 @@ describe('JsonWebKey2020', () => {
 	});
 
 	test('generates as X25519KeyPair', async () => {
-		const keypair = await JsonWebKey.generate({ kty: 'OKP', crv: 'X25519' });
+		const keypair = await JsonWebKeyPair.generate({ kty: 'OKP', crv: 'X25519' });
 
 		expect(keypair.type).to.equal('X25519KeyAgreementKey2019');
 		expect(keypair).to.have.property('publicKeyBase58');

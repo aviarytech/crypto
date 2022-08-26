@@ -144,11 +144,11 @@ const getSigner = (k: any, options = { detached: true }) => {
 	return () => {};
 };
 
-const getEncrypter = async (k: JsonWebKey, options = { flattened: false }) => {
+const getEncrypter = async (k: JsonWebKeyPair, options = { flattened: false }) => {
 	const { publicKeyJwk } = await k.export();
 };
 
-const getDecrypter = async (k: JsonWebKey, options = { flattened: false }) => {
+const getDecrypter = async (k: JsonWebKeyPair, options = { flattened: false }) => {
 	const { privateKeyJwk } = await k.export();
 };
 
@@ -158,11 +158,11 @@ export interface JsonWebKey2020 extends BaseKeyPair {
 	controller: string;
 	publicKeyJwk: IJWK;
 	privateKeyJwk?: IJWK;
-	export: (options: {privateKey?: boolean}) => Promise<JsonWebKey>
+	export: (options: {privateKey?: boolean}) => Promise<JsonWebKeyPair>
 	exportAsLD: (options: {privateKey?: boolean}) => Promise<BaseKeyPair>
 }
 
-export class JsonWebKey implements JsonWebKey2020 {
+export class JsonWebKeyPair implements JsonWebKey2020 {
 	id: string;
 	type: 'JsonWebKey2020';
 	controller: string;
@@ -190,7 +190,7 @@ export class JsonWebKey implements JsonWebKey2020 {
 	};
 
 	static fromJWK = async (k: JsonWebKey2020) => {
-		return new JsonWebKey(k.id, k.controller, k.publicKeyJwk, k.privateKeyJwk);
+		return new JsonWebKeyPair(k.id, k.controller, k.publicKeyJwk, k.privateKeyJwk);
 	};
 
 	static generate = async (options: any = { kty: 'OKP', crv: 'Ed25519', detached: true }) => {
@@ -199,7 +199,7 @@ export class JsonWebKey implements JsonWebKey2020 {
 	};
 
 	/**
-	 * Export as a JsonWebKey (might not be necessary?)
+	 * Export as a JsonWebKeyPair (might not be necessary?)
 	 */
 	async export(
 		options: {
@@ -207,8 +207,8 @@ export class JsonWebKey implements JsonWebKey2020 {
 		} = {
 			privateKey: false
 		}
-	): Promise<JsonWebKey> {
-		return new JsonWebKey(
+	): Promise<JsonWebKeyPair> {
+		return new JsonWebKeyPair(
 			this.id,
 			this.controller,
 			this.publicKeyJwk,

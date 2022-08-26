@@ -5,7 +5,7 @@ import { DecryptTransformer } from '$lib/JWE/DecryptTransformer.js';
 import { Buffer } from 'buffer/index.js';
 import type { Header, IJWE } from '$lib';
 import { X25519KeyPair } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
-import { JsonWebKey } from '$lib/keypairs/JsonWebKey2020.js';
+import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
 import { base64url } from '$lib/utils/encoding.js';
 import { stringToUint8Array } from '$lib/utils/sha256.js';
 import type { BaseKeyPair } from '$lib/keypairs/BaseKeyPair.js';
@@ -52,7 +52,7 @@ export class JsonWebEncryptionSuite {
 				// derive KEKs for each recipient
 				const derivedResults = await Promise.all(
 					publicKeys.map((staticPublicKey) =>
-						KeyEncryptionKey.fromStaticPeer(JsonWebKey)({
+						KeyEncryptionKey.fromStaticPeer(JsonWebKeyPair)({
 							ephemeralKeyPair,
 							staticPublicKey
 						})
@@ -121,7 +121,7 @@ export class JsonWebEncryptionSuite {
 
 	async createDecryptTransformer({ keyAgreementKey }: any) {
 		return new DecryptTransformer({
-			KeyPairClass: JsonWebKey,
+			KeyPairClass: JsonWebKeyPair,
 			keyAgreementKey
 		});
 	}

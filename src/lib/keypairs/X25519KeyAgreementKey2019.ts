@@ -3,7 +3,7 @@ import { staticImplements } from '$lib/utils/staticImplements.js';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
 import { base58, base64url } from '$lib/utils/encoding.js';
-import { JsonWebKey, JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 export interface X25519KeyAgreementKey2019 extends BaseKeyPair {
 	id: string;
@@ -76,8 +76,8 @@ export class X25519KeyPair implements X25519KeyAgreementKey2019 {
 			privateKey: false,
 			type: 'JsonWebKey2020'
 		}
-	): Promise<JsonWebKey> {
-		return new JsonWebKey(
+	): Promise<JsonWebKeyPair> {
+		return new JsonWebKeyPair(
 			this.id,
 			this.controller,
 			{

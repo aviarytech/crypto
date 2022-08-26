@@ -2,7 +2,7 @@ import jsonld from 'jsonld';
 import { Buffer } from 'buffer/index.js';
 import type { DocumentLoader } from '$lib';
 import { LinkedDataProof } from '$lib/LDP/proof.js';
-import { JsonWebKey } from '$lib/keypairs/JsonWebKey2020.js';
+import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
 import { sha256buffer } from '$lib/utils/sha256.js';
 import { base64url } from '$lib/utils/encoding.js';
 
@@ -10,8 +10,8 @@ export { createJWSSigner } from '$lib/JWS/createSigner.js';
 export { createJWSVerifier } from '$lib/JWS/createVerifier.js';
 
 export interface ISuite {
-	key?: JsonWebKey;
-	getVerificationMethod: (options: any) => Promise<JsonWebKey>;
+	key?: JsonWebKeyPair;
+	getVerificationMethod: (options: any) => Promise<JsonWebKeyPair>;
 	deriveProof?: (options: any) => Promise<any>;
 }
 
@@ -52,14 +52,14 @@ export class JsonWebSignature2020LinkedDataProof extends LinkedDataProof {
 }
 
 export class JsonWebSignature2020Suite {
-	public key: JsonWebKey;
+	public key: JsonWebKeyPair;
 	public date: string;
 	public type: string = 'JsonWebSignature2020';
 	public context: string = 'https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json';
 	public verificationMethod?: string;
 	public useNativeCanonize: boolean = false;
 
-	constructor(options: { key: JsonWebKey; date?: string }) {
+	constructor(options: { key: JsonWebKeyPair; date?: string }) {
 		this.date = options.date;
 		if (options.key) {
 			this.key = options.key;
@@ -82,7 +82,7 @@ export class JsonWebSignature2020Suite {
 			throw new Error(`Verification method ${verificationMethod} not found.`);
 		}
 
-		return JsonWebKey.fromJWK(result);
+		return JsonWebKeyPair.fromJWK(result);
 	}
 
 	async canonize(input: any, { documentLoader, expansionMap, skipExpansion }: any) {
@@ -167,7 +167,7 @@ export class JsonWebSignature2020Suite {
 		}
 	}
 
-	async verify(verifyData: Uint8Array, verificationMethod: JsonWebKey, proof: { jws: string }) {
+	async verify(verifyData: Uint8Array, verificationMethod: JsonWebKeyPair, proof: { jws: string }) {
 		try {
 			const key = await verificationMethod.exportAsLD({ privateKey: false });
 			const [header, _, signature] = proof.jws.split('.');

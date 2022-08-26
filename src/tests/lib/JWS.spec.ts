@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
 import { Buffer } from 'buffer/index.js';
-import { JsonWebKey } from '$lib/keypairs/JsonWebKey2020';
+import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020';
 import { documentLoader } from '../fixtures/documentLoader';
 import { JsonWebSignature2020Suite } from '$lib/JWS/Suite';
 
@@ -11,7 +11,7 @@ const jws = require('../fixtures/jws.json');
 
 describe('JWS', () => {
 	test('Can sign data', async () => {
-		const key = await JsonWebKey.fromJWK(jwk2020);
+		const key = await JsonWebKeyPair.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
 			date: new Date().toISOString()
@@ -24,7 +24,7 @@ describe('JWS', () => {
 	});
 
 	test('Can verify data', async () => {
-		const key = await JsonWebKey.fromJWK(jwk2020);
+		const key = await JsonWebKeyPair.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
 			date: new Date().toISOString()
@@ -37,7 +37,7 @@ describe('JWS', () => {
 
 	test(`Can create proof w/ challenge`, async () => {
 		const credential = require(`../fixtures/credentials/case-1.json`);
-		const key = await JsonWebKey.fromJWK(jwk2020);
+		const key = await JsonWebKeyPair.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
 			date: new Date().toISOString()
@@ -56,7 +56,7 @@ describe('JWS', () => {
 
 	test(`Can create proof w/ domain`, async () => {
 		const credential = require(`../fixtures/credentials/case-1.json`);
-		const key = await JsonWebKey.fromJWK(jwk2020);
+		const key = await JsonWebKeyPair.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
 			date: new Date().toISOString()
@@ -74,7 +74,7 @@ describe('JWS', () => {
 
 	test(`Can create proof w/ challenge & domain`, async () => {
 		const credential = require(`../fixtures/credentials/case-1.json`);
-		const key = await JsonWebKey.fromJWK(jwk2020);
+		const key = await JsonWebKeyPair.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
 			date: new Date().toISOString()
@@ -97,7 +97,7 @@ describe('JWS', () => {
 	test(`Can verify proof w/ challenge & domain`, async () => {
 		const credential = require(`../fixtures/credentials/case-1.json`);
 		const proof = require('../fixtures/proofs/with-challenge-and-domain.json');
-		const key = await JsonWebKey.fromJWK(jwk2020);
+		const key = await JsonWebKeyPair.fromJWK(jwk2020);
 		const suite = new JsonWebSignature2020Suite({
 			key,
 			date: new Date().toISOString()
@@ -112,7 +112,7 @@ describe('JWS', () => {
 	['1', '10'].forEach((v) => {
 		test(`Can create proof: case-${v}`, async () => {
 			const credential = require(`../fixtures/credentials/case-${v}.json`);
-			const key = await JsonWebKey.fromJWK(jwk2020);
+			const key = await JsonWebKeyPair.fromJWK(jwk2020);
 			const suite = new JsonWebSignature2020Suite({
 				key,
 				date: new Date().toISOString()
@@ -132,7 +132,7 @@ describe('JWS', () => {
 		test(`Can verify proof: case-${v}`, async () => {
 			const credential = require(`../fixtures/credentials/case-${v}.json`);
 			const proof = require(`../fixtures/proofs/case-${v}.json`);
-			const key = await JsonWebKey.fromJWK(jwk2020);
+			const key = await JsonWebKeyPair.fromJWK(jwk2020);
 			const suite = new JsonWebSignature2020Suite({
 				key,
 				date: new Date().toISOString()
@@ -145,7 +145,7 @@ describe('JWS', () => {
 
 		test(`Can create and verify proof: case-${v}`, async () => {
 			const credential = require(`../fixtures/credentials/case-${v}.json`);
-			const key = await JsonWebKey.fromJWK(jwk2020);
+			const key = await JsonWebKeyPair.fromJWK(jwk2020);
 			const suite = new JsonWebSignature2020Suite({
 				key,
 				date: new Date().toISOString()

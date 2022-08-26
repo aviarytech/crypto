@@ -7,7 +7,7 @@ import { sha256Uint8Array } from '$lib/utils/sha256.js';
 import { base58, base64url } from '$lib/utils/encoding.js';
 import { SECP256K1_MULTICODEC_IDENTIFIER } from '$lib/constants.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
-import { JsonWebKey, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 export interface EcdsaSecp256k1VerificationKey2019 extends BaseKeyPair {
 	id: string;
@@ -82,7 +82,7 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 		return new EcdsaSecp256k1KeyPair(k.id, k.controller, k.publicKeyBase58, k.privateKeyBase58);
 	};
 
-	static fromJWK = async (k: JsonWebKey) => {
+	static fromJWK = async (k: JsonWebKeyPair) => {
 		const { x, y } = k.publicKeyJwk;
 		const xInt = Buffer.from(x, 'base64').toString('hex');
 		const yInt = Buffer.from(y, 'base64').toString('hex');
@@ -115,7 +115,7 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 		const y = bytes.slice(33);
 		if (!options.privateKey) {
 			return {
-				...new JsonWebKey(this.id, this.controller, {
+				...new JsonWebKeyPair(this.id, this.controller, {
 					kty: 'EC',
 					crv: 'secp256k1',
 					x: base64url.encode(x),
@@ -124,7 +124,7 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 			};
 		}
 		return {
-			...new JsonWebKey(
+			...new JsonWebKeyPair(
 				this.id,
 				this.controller,
 				{

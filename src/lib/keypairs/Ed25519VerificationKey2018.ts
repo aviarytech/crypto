@@ -4,7 +4,7 @@ import { base58, base64url } from '$lib/utils/encoding.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
 import * as ed25519 from '@stablelib/ed25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
-import { JsonWebKey, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 export interface Ed25519VerificationKey2018 extends BaseKeyPair {
 	id: string;
@@ -100,8 +100,8 @@ export class Ed25519KeyPair implements Ed25519VerificationKey2018 {
 			privateKey: false,
 			type: 'JsonWebKey2020'
 		}
-	): Promise<JsonWebKey> {
-		return new JsonWebKey(
+	): Promise<JsonWebKeyPair> {
+		return new JsonWebKeyPair(
 			this.id,
 			this.controller,
 			{
