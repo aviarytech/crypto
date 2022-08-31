@@ -36,11 +36,11 @@ export class JWTSuite {
 
 	async verify(jwt: string): Promise<VerificationResult> {
 		try {
-			const { privateKeyJwk } = await this.key.export({ privateKey: true });
-            if (!privateKeyJwk) {
+			const { publicKeyJwk } = await this.key.export({ privateKey: true });
+            if (!publicKeyJwk) {
                 throw new Error(`key not found`)
             }
-            const key = await importJWK(privateKeyJwk, this.alg)
+            const key = await importJWK(publicKeyJwk, this.alg)
             const { payload, protectedHeader } = await jwtVerify(jwt, key);
             return {
                 verified: true,
