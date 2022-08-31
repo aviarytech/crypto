@@ -22,12 +22,12 @@ export class JWTSuite {
 
     async sign(payload: JWTPayload): Promise<string> {
         try {
-			const { privateKeyJwk } = await this.key.export({ privateKey: true });
+			const { privateKeyJwk, id } = await this.key.export({ privateKey: true });
             if (!privateKeyJwk) {
                 throw new Error(`key not found`)
             }
             const key = await importJWK(privateKeyJwk, this.alg)
-            return await new SignJWT(payload).setProtectedHeader({alg: this.alg}).sign(key);
+            return await new SignJWT(payload).setProtectedHeader({alg: this.alg, kid: id}).sign(key);
 		} catch (e) {
 			console.error('Failed to sign.', e);
 			throw e;
