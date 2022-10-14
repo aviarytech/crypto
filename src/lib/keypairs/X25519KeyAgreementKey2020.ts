@@ -1,46 +1,23 @@
-
-import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base64url } from '$lib/utils/encoding.js';
-import { base58btc as base58 } from "multiformats/bases/base58"
-import * as ed25519 from '@stablelib/ed25519';
+import * as x25519 from '@stablelib/x25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
+import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
+import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
+import { base64url } from '$lib/utils/encoding.js';
+import { base58btc as base58 } from 'multiformats/bases/base58';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
-
 @staticImplements<BaseKeyPairStatic>()
-export class Ed25519VerificationKey2020 implements BaseKeyPair {
+export class X25519KeyAgreementKey2020 implements BaseKeyPair {
 	id: string;
-	type: 'Ed25519VerificationKey2020';
+	type: 'X25519KeyAgreementKey2020';
 	controller: string;
 	publicKeyMultibase: string;
 	privateKeyMultibase?: string;
 	publicKey: Uint8Array;
 	privateKey?: Uint8Array;
 
-	signer = (privateKey: Uint8Array) => {
-		return {
-			async sign({ data }: {data: Uint8Array}) {
-				return ed25519.sign(privateKey, data);
-			}
-		};
-	};
-
-	verifier = (publicKey: Uint8Array) => {
-		return {
-			async verify({ data, signature }: { data: Uint8Array, signature: Uint8Array }): Promise<boolean> {
-				let verified = false;
-				try {
-					verified = ed25519.verify(publicKey, data, signature);
-				} catch (e) {
-					// console.error('An error occurred when verifying signature: ', e);
-				}
-				return verified;
-			}
-		};
-	};
-
 	constructor(id: string, controller: string, publicKeyMultibase: string, privateKeyMultibase?: string) {
-		this.type = 'Ed25519VerificationKey2020';
+		this.type = 'X25519KeyAgreementKey2020';
 		this.id = id;
 		this.controller = controller;
 		this.publicKeyMultibase = publicKeyMultibase;
@@ -52,29 +29,28 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	}
 
 	static generate = async () => {
-		const key = ed25519.generateKeyPair();
+		const key = x25519.generateKeyPair();
 
-		const pub = base58.encode(key.publicKey);
-		const priv = base58.encode(key.secretKey);
+		const fingerprint = getMultibaseFingerprintFromPublicKeyBytes(key.publicKey);
 
-		const controller = `did:key:${pub}`;
-		const id = `${controller}#${pub}`;
+		const controller = `did:key:${fingerprint}`;
+		const id = `${controller}#${fingerprint}`;
 
-		return new Ed25519VerificationKey2020(
+		return new X25519KeyAgreementKey2020(
 			id,
 			controller,
-			pub,
-			priv
+			base58.encode(key.publicKey),
+			base58.encode(key.secretKey)
 		);
 	};
 
-	static from = async (k: Ed25519VerificationKey2020, options: {}) => {
+	static from = async (k: X25519KeyAgreementKey2020, options: {}) => {
 		let publicKeyMultibase, privateKeyMultibase;
 		publicKeyMultibase = k.publicKeyMultibase;
 		if (k.privateKeyMultibase) {
 			privateKeyMultibase = k.privateKeyMultibase;
 		}
-		return new Ed25519VerificationKey2020(k.id, k.controller, publicKeyMultibase, privateKeyMultibase);
+		return new X25519KeyAgreementKey2020(k.id, k.controller, publicKeyMultibase, privateKeyMultibase);
 	};
 
 	static fromJWK = async (k: JsonWebKey2020) => {
@@ -85,7 +61,7 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		if (k.privateKeyJwk && k.privateKeyJwk.d) {
 			privateKey = base58.encode(base64url.decode(k.privateKeyJwk.d));
 		}
-		return new Ed25519VerificationKey2020(k.id, k.controller, publicKey, privateKey);
+		return new X25519KeyAgreementKey2020(k.id, k.controller, publicKey, privateKey);
 	};
 
 	async export(
@@ -102,17 +78,31 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 			this.controller,
 			{
 				kty: 'OKP',
-				crv: 'Ed25519',
+				crv: 'X25519',
 				x: base64url.encode(this.publicKey)
 			},
 			options.privateKey && this.privateKey
 				? {
 						kty: 'OKP',
-						crv: 'Ed25519',
+						crv: 'X25519',
 						x: base64url.encode(this.publicKey),
 						d: base64url.encode(this.privateKey)
 				  }
 				: undefined
 		);
+	}
+
+	async deriveSecret({ publicKey }: { publicKey: X25519KeyAgreementKey2020 }) {
+		const remote = new X25519KeyAgreementKey2020(
+			publicKey.id,
+			publicKey.controller,
+			publicKey.publicKeyMultibase,
+			this.privateKeyMultibase
+		);
+		if (!this.privateKey) {
+			throw new Error('No private key available for deriveSecret');
+		}
+		const scalarMultipleResult = x25519.sharedKey(this.privateKey, remote.publicKey, true);
+		return scalarMultipleResult;
 	}
 }
