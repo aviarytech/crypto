@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { X25519KeyPair, JsonWebEncryptionSuite } from '$lib';
+import { X25519KeyAgreementKey2019, JsonWebEncryptionSuite } from '$lib';
 
 const plaintext = require('../fixtures/plaintext.json');
 const jwe = require('../fixtures/jwe.json');
@@ -31,7 +31,7 @@ describe('JWE', () => {
 
 	test('Can decrypt data', async () => {
 		const cipher = new JsonWebEncryptionSuite();
-		const keyAgreementKey = new X25519KeyPair(
+		const keyAgreementKey = new X25519KeyAgreementKey2019(
 			key.id,
 			key.controller,
 			key.publicKeyBase58,

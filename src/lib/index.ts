@@ -8,6 +8,7 @@ export * from '$lib/keypairs/JsonWebKey2020.js';
 export * from '$lib/keypairs/Ed25519VerificationKey2018.js';
 export * from '$lib/keypairs/Ed25519VerificationKey2020.js';
 export * from '$lib/keypairs/X25519KeyAgreementKey2019.js';
+export * from '$lib/keypairs/X25519KeyAgreementKey2020.js';
 export * from '$lib/keypairs/Secp256k1KeyPair.js';
 
 export * from '$lib/LDP/proof.js';

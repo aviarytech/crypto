@@ -4,7 +4,7 @@ import { createJWSVerifier } from "$lib/JWS/createVerifier.js";
 import type { BaseKeyPair } from "$lib/keypairs/BaseKeyPair.js";
 import { Ed25519VerificationKey2018 } from "$lib/keypairs/Ed25519VerificationKey2018.js";
 import { EcdsaSecp256k1KeyPair } from "$lib/keypairs/Secp256k1KeyPair.js";
-import { X25519KeyPair } from "$lib/keypairs/X25519KeyAgreementKey2019.js";
+import { X25519KeyAgreementKey2019 } from "$lib/keypairs/X25519KeyAgreementKey2019.js";
 
 
 const applyJwa = async (k: any, options?: any) => {
@@ -42,7 +42,7 @@ const getKeyPairForKtyAndCrv = (kty: string, crv: string) => {
 			return Ed25519VerificationKey2018;
 		}
 		if (crv === 'X25519') {
-			return X25519KeyPair;
+			return X25519KeyAgreementKey2019;
 		}
 	}
 	if (kty === 'EC') {
@@ -71,7 +71,7 @@ const getKeyPairForType = (k: any) => {
 	//   return Bls12381G2KeyPair;
 	// }
 	if (k.type === 'X25519KeyAgreementKey2019') {
-		return X25519KeyPair;
+		return X25519KeyAgreementKey2019;
 	}
 
 	throw new Error('getKeyPairForType does not support type: ' + k.type);

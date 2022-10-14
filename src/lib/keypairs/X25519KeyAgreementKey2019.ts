@@ -5,15 +5,8 @@ import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.
 import { base58, base64url } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
-export interface X25519KeyAgreementKey2019 extends BaseKeyPair {
-	id: string;
-	type: 'X25519KeyAgreementKey2019';
-	controller: string;
-	publicKeyBase58: string;
-	privateKeyBase58?: string;
-}
 @staticImplements<BaseKeyPairStatic>()
-export class X25519KeyPair implements X25519KeyAgreementKey2019 {
+export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 	id: string;
 	type: 'X25519KeyAgreementKey2019';
 	controller: string;
@@ -42,7 +35,7 @@ export class X25519KeyPair implements X25519KeyAgreementKey2019 {
 		const controller = `did:key:${fingerprint}`;
 		const id = `${controller}#${fingerprint}`;
 
-		return new X25519KeyPair(
+		return new X25519KeyAgreementKey2019(
 			id,
 			controller,
 			base58.encode(key.publicKey),
@@ -50,13 +43,13 @@ export class X25519KeyPair implements X25519KeyAgreementKey2019 {
 		);
 	};
 
-	static from = async (k: X25519KeyPair, options: {}) => {
+	static from = async (k: X25519KeyAgreementKey2019, options: {}) => {
 		let publicKeyBase58, privateKeyBase58;
 		publicKeyBase58 = k.publicKeyBase58;
 		if (k.privateKeyBase58) {
 			privateKeyBase58 = k.privateKeyBase58;
 		}
-		return new X25519KeyPair(k.id, k.controller, publicKeyBase58, privateKeyBase58);
+		return new X25519KeyAgreementKey2019(k.id, k.controller, publicKeyBase58, privateKeyBase58);
 	};
 
 	static fromJWK = async (k: JsonWebKey2020) => {
@@ -65,7 +58,7 @@ export class X25519KeyPair implements X25519KeyAgreementKey2019 {
 		if (k.privateKeyJwk) {
 			privateKeyBase58 = base58.encode(base64url.decode(k.privateKeyJwk.d));
 		}
-		return new X25519KeyPair(k.id, k.controller, publicKeyBase58, privateKeyBase58);
+		return new X25519KeyAgreementKey2019(k.id, k.controller, publicKeyBase58, privateKeyBase58);
 	};
 
 	async export(
@@ -97,7 +90,7 @@ export class X25519KeyPair implements X25519KeyAgreementKey2019 {
 	}
 
 	async deriveSecret({ publicKey }: { publicKey: X25519KeyAgreementKey2019 }) {
-		const remote = new X25519KeyPair(
+		const remote = new X25519KeyAgreementKey2019(
 			publicKey.id,
 			publicKey.controller,
 			publicKey.publicKeyBase58,

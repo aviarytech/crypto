@@ -4,7 +4,7 @@ import { EncryptTransformer } from '$lib/JWE/EncryptTransformer.js';
 import { DecryptTransformer } from '$lib/JWE/DecryptTransformer.js';
 import { Buffer } from 'buffer/index.js';
 import type { Header, IJWE } from '$lib';
-import { X25519KeyPair } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
+import { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
 import { base64url } from '$lib/utils/encoding.js';
 import { stringToUint8Array } from '$lib/utils/sha256.js';
@@ -38,7 +38,7 @@ export class JsonWebEncryptionSuite {
 				);
 				// derive ephemeral ECDH key pair to use with all recipients
 				const epk = await (
-					await X25519KeyPair.generate()
+					await X25519KeyAgreementKey2019.generate()
 				).export({
 					type: 'JsonWebKey2020',
 					privateKey: true

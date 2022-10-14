@@ -1,5 +1,5 @@
 import { AESKW } from '@stablelib/aes-kw';
-import { X25519KeyPair } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
+import { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { base64url } from '$lib/utils/encoding.js';
 import { deriveKey } from '$lib/JWE/ecdhkdf.js';
 import { Buffer } from 'buffer/index.js';
@@ -81,7 +81,7 @@ export class KeyEncryptionKey {
 			}
 			const epkPair =
 				ephemeralKeyPair.keypair.type === 'JsonWebKey2020'
-					? await X25519KeyPair.fromJWK(ephemeralKeyPair.keypair)
+					? await X25519KeyAgreementKey2019.fromJWK(ephemeralKeyPair.keypair)
 					: await KeyPair.from(ephemeralKeyPair.keypair);
 
 			// "Party U Info"
@@ -126,7 +126,7 @@ export class KeyEncryptionKey {
 				controller: epk
 			};
 
-			const epkPair = await X25519KeyPair.fromJWK(ephemeralPublicKey);
+			const epkPair = await X25519KeyAgreementKey2019.fromJWK(ephemeralPublicKey);
 
 			// safe to use IDs like in rfc7518 or does
 			// https://tools.ietf.org/html/rfc7748#section-7 pose any issues?

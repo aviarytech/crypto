@@ -55,7 +55,7 @@ describe('JsonWebKey2020', () => {
 		expect(keypair).to.have.property('privateKeyBase58');
 	});
 
-	test('generates as X25519KeyPair', async () => {
+	test('generates as X25519KeyAgreementKey2019', async () => {
 		const keypair = await JsonWebKeyPair.generate({ kty: 'OKP', crv: 'X25519' });
 
 		expect(keypair.type).to.equal('X25519KeyAgreementKey2019');
