@@ -5,7 +5,7 @@ let jwk2020: any;
 
 describe('JsonWebKey2020', () => {
 	beforeEach(() => {
-		jwk2020 = require('../fixtures/JsonWebKey2020.json');
+		jwk2020 = require('../fixtures/keypairs/JsonWebKey2020.json');
 	})
 	test('resolves as JWK', async () => {
 		const jwk = new JsonWebKeyPair(

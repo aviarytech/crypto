@@ -1,24 +1,25 @@
 
-import type { BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base58, base64url } from '$lib/utils/encoding.js';
+import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
+import { base64url } from '$lib/utils/encoding.js';
+import { base58btc as base58 } from "multiformats/bases/base58"
 import * as ed25519 from '@stablelib/ed25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 
 @staticImplements<BaseKeyPairStatic>()
-export class Ed25519VerificationKey2018 implements Ed25519VerificationKey2018 {
+export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	id: string;
-	type: 'Ed25519VerificationKey2018';
+	type: 'Ed25519VerificationKey2020';
 	controller: string;
-	publicKeyBase58: string;
-	privateKeyBase58?: string;
+	publicKeyMultibase: string;
+	privateKeyMultibase?: string;
 	publicKey: Uint8Array;
 	privateKey?: Uint8Array;
 
 	signer = (privateKey: Uint8Array) => {
 		return {
-			async sign({ data }: { data: Uint8Array }) {
+			async sign({ data }: {data: Uint8Array}) {
 				return ed25519.sign(privateKey, data);
 			}
 		};
@@ -38,52 +39,54 @@ export class Ed25519VerificationKey2018 implements Ed25519VerificationKey2018 {
 		};
 	};
 
-	constructor(id: string, controller: string, publicKeyBase58: string, privateKeyBase58?: string) {
-		this.type = 'Ed25519VerificationKey2018';
+	constructor(id: string, controller: string, publicKeyMultibase: string, privateKeyMultibase?: string) {
+		this.type = 'Ed25519VerificationKey2020';
 		this.id = id;
 		this.controller = controller;
-		this.publicKeyBase58 = publicKeyBase58;
-		this.privateKeyBase58 = privateKeyBase58;
-		this.publicKey = base58.decode(publicKeyBase58);
-		if (privateKeyBase58) {
-			this.privateKey = base58.decode(privateKeyBase58);
+		this.publicKeyMultibase = publicKeyMultibase;
+		this.privateKeyMultibase = privateKeyMultibase;
+		this.publicKey = base58.decode(publicKeyMultibase);
+		if (privateKeyMultibase) {
+			this.privateKey = base58.decode(privateKeyMultibase);
 		}
 	}
 
 	static generate = async () => {
 		const key = ed25519.generateKeyPair();
 
+		// const fingerprint = getMultibaseFingerprintFromPublicKeyBytes(key.publicKey);
 		const pub = base58.encode(key.publicKey);
+		const priv = base58.encode(key.secretKey);
 
 		const controller = `did:key:${pub}`;
 		const id = `${controller}#${pub}`;
 
-		return new Ed25519VerificationKey2018(
+		return new Ed25519VerificationKey2020(
 			id,
 			controller,
-			base58.encode(key.publicKey),
-			base58.encode(key.secretKey)
+			pub,
+			priv
 		);
 	};
 
-	static from = async (k: Ed25519VerificationKey2018, options: {}) => {
-		let publicKeyBase58, privateKeyBase58;
-		publicKeyBase58 = k.publicKeyBase58;
-		if (k.privateKeyBase58) {
-			privateKeyBase58 = k.privateKeyBase58;
+	static from = async (k: Ed25519VerificationKey2020, options: {}) => {
+		let publicKeyMultibase, privateKeyMultibase;
+		publicKeyMultibase = k.publicKeyMultibase;
+		if (k.privateKeyMultibase) {
+			privateKeyMultibase = k.privateKeyMultibase;
 		}
-		return new Ed25519VerificationKey2018(k.id, k.controller, publicKeyBase58, privateKeyBase58);
+		return new Ed25519VerificationKey2020(k.id, k.controller, publicKeyMultibase, privateKeyMultibase);
 	};
 
 	static fromJWK = async (k: JsonWebKey2020) => {
-		let publicKeyBase58, privateKeyBase58;
+		let publicKey, privateKey;
 		if (!k.publicKeyJwk.x)
-		throw new Error('Public Key Not found')
-		publicKeyBase58 = base58.encode(base64url.decode(k.publicKeyJwk.x));
+			throw new Error('Public Key Not found')
+		publicKey = base58.encode(base64url.decode(k.publicKeyJwk.x));
 		if (k.privateKeyJwk && k.privateKeyJwk.d) {
-			privateKeyBase58 = base58.encode(base64url.decode(k.privateKeyJwk.d));
+			privateKey = base58.encode(base64url.decode(k.privateKeyJwk.d));
 		}
-		return new Ed25519VerificationKey2018(k.id, k.controller, publicKeyBase58, privateKeyBase58);
+		return new Ed25519VerificationKey2020(k.id, k.controller, publicKey, privateKey);
 	};
 
 	async export(

@@ -3,7 +3,7 @@ import { X25519KeyPair, JsonWebEncryptionSuite } from '$lib';
 
 const plaintext = require('../fixtures/plaintext.json');
 const jwe = require('../fixtures/jwe.json');
-const key = require('../fixtures/X25519KeyAgreementKey2019.json');
+const key = require('../fixtures/keypairs/X25519KeyAgreementKey2019.json');
 describe('JWE', () => {
 	test('Can encrypt data', async () => {
 		const cipher = new JsonWebEncryptionSuite();

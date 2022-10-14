@@ -6,7 +6,7 @@ let jwk2020: any;
 
 describe('JWT', () => {
     beforeEach(() => {
-		jwk2020 = require('../fixtures/JsonWebKey2020.json');
+		jwk2020 = require('../fixtures/keypairs/JsonWebKey2020.json');
 	})
     test('createJWT will create a JWT', async () => {
         const key = await JsonWebKeyPair.fromJWK(jwk2020)

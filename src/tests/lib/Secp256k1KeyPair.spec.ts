@@ -1,7 +1,7 @@
 import { EcdsaSecp256k1KeyPair } from "$lib";
 import { describe, expect, test } from "vitest"
 
-const key = require('../fixtures/EcdsaSecp256k1VerificationKey2019.json');
+const key = require('../fixtures/keypairs/EcdsaSecp256k1VerificationKey2019.json');
 
 describe('Secp256k1 KeyPair tests', () => {
 	test('should construct from object', async () => {

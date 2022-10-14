@@ -6,7 +6,7 @@ import { documentLoader } from '../fixtures/documentLoader';
 import { JsonWebSignature2020Suite } from '$lib/JWS/Suite';
 
 const plaintext = require('../fixtures/plaintext.json');
-const jwk2020 = require('../fixtures/JsonWebKey2020.json');
+const jwk2020 = require('../fixtures/keypairs/JsonWebKey2020.json');
 const jws = require('../fixtures/jws.json');
 
 describe('JWS', () => {
