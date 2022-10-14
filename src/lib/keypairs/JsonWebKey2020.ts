@@ -2,7 +2,7 @@ import type { IJWK } from "$lib";
 import { createJWSSigner } from "$lib/JWS/createSigner.js";
 import { createJWSVerifier } from "$lib/JWS/createVerifier.js";
 import type { BaseKeyPair } from "$lib/keypairs/BaseKeyPair.js";
-import { Ed25519KeyPair } from "$lib/keypairs/Ed25519VerificationKey2018.js";
+import { Ed25519VerificationKey2018 } from "$lib/keypairs/Ed25519VerificationKey2018.js";
 import { EcdsaSecp256k1KeyPair } from "$lib/keypairs/Secp256k1KeyPair.js";
 import { X25519KeyPair } from "$lib/keypairs/X25519KeyAgreementKey2019.js";
 
@@ -39,7 +39,7 @@ const useJwa = async (k: any, options?: any) => {
 const getKeyPairForKtyAndCrv = (kty: string, crv: string) => {
 	if (kty === 'OKP') {
 		if (crv === 'Ed25519') {
-			return Ed25519KeyPair;
+			return Ed25519VerificationKey2018;
 		}
 		if (crv === 'X25519') {
 			return X25519KeyPair;
@@ -62,7 +62,7 @@ const getKeyPairForType = (k: any) => {
 		return getKeyPairForKtyAndCrv(k.publicKeyJwk.kty, k.publicKeyJwk.crv);
 	}
 	if (k.type === 'Ed25519VerificationKey2018') {
-		return Ed25519KeyPair;
+		return Ed25519VerificationKey2018;
 	}
 	// if (k.type === "EcdsaSecp256k1VerificationKey2019") {
 	//   return Secp256k1KeyPair;
