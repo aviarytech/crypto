@@ -20,11 +20,11 @@ export const utf8 = {
 }
 
 export const base64url = {
-	encode: (unencoded: Uint8Array): string => {
+	encode: (unencoded: any): string => {
 		var encoded = base64.encode(unencoded);
 		return encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 	},
-	decode: (encoded: string): Uint8Array => {
+	decode: (encoded: any): Uint8Array => {
 		encoded = encoded.replace(/-/g, '+').replace(/_/g, '/');
 		while (encoded.length % 4) encoded += '=';
 		return base64.decode(encoded);
