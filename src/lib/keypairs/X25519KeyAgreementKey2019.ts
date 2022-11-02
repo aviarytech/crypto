@@ -58,7 +58,7 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 		if (k.privateKeyJwk) {
 			privateKeyBase58 = base58.encode(base64url.decode(k.privateKeyJwk.d));
 		}
-		return new X25519KeyAgreementKey2019(k.id, k.controller, publicKeyBase58, privateKeyBase58);
+		return new X25519KeyAgreementKey2019(k.id, k.controller, publicKeyBase58, privateKeyBase58!);
 	};
 
 	async export(
@@ -89,13 +89,21 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 		);
 	}
 
-	async deriveSecret({ publicKey }: { publicKey: X25519KeyAgreementKey2019 }) {
-		const remote = new X25519KeyAgreementKey2019(
-			publicKey.id,
-			publicKey.controller,
-			publicKey.publicKeyBase58,
-			this.privateKeyBase58
-		);
+	async deriveSecret({ publicKey }: { publicKey: JsonWebKeyPair | X25519KeyAgreementKey2019 }) {
+		let remote;
+		if (publicKey.type === 'JsonWebKey2020') {
+			remote = await X25519KeyAgreementKey2019.fromJWK(publicKey)
+		} else {
+			remote = new X25519KeyAgreementKey2019(
+				publicKey.id,
+				publicKey.controller,
+				publicKey.publicKeyBase58,
+				this.privateKeyBase58
+			)
+		}
+		if (!remote.publicKey) {
+			throw new Error('No public key available for deriveSecret')
+		}
 		if (!this.privateKey) {
 			throw new Error('No private key available for deriveSecret');
 		}

@@ -68,14 +68,29 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		);
 	};
 
-	static from = async (k: Ed25519VerificationKey2020, options: {}) => {
-		let publicKeyMultibase, privateKeyMultibase;
-		publicKeyMultibase = k.publicKeyMultibase;
-		if (k.privateKeyMultibase) {
-			privateKeyMultibase = k.privateKeyMultibase;
-		}
-		return new Ed25519VerificationKey2020(k.id, k.controller, publicKeyMultibase, privateKeyMultibase);
+	static from = async (options: {id?: string, controller?: string, publicKeyMultibase: string, privateKeyMultibase?: string}) => {
+		return new Ed25519VerificationKey2020(
+			options.id ?? `#${options.publicKeyMultibase.slice(1, 7)}`,
+			options.controller ?? `#${options.publicKeyMultibase.slice(1, 7)}`,
+			options.publicKeyMultibase,
+			options.privateKeyMultibase
+		);
 	};
+	
+	static fromBase58 = async (options: {id?: string, controller?: string, publicKeyBase58: string, privateKeyBase58?: string}) => {
+		let publicKeyMultibase, privateKeyMultibase;
+		console.log(base58.baseDecode(options.publicKeyBase58))
+		publicKeyMultibase = base58.encode(base58.baseDecode(options.publicKeyBase58))
+		if (options.privateKeyBase58) {
+			privateKeyMultibase = base58.encode(base58.baseDecode(options.privateKeyBase58));
+		}
+		return new Ed25519VerificationKey2020(
+			options.id ?? `#${publicKeyMultibase.slice(0, 8)}`,
+			options.controller ?? `#${publicKeyMultibase.slice(0, 8)}`,
+			publicKeyMultibase,
+			privateKeyMultibase
+		);
+	}
 
 	static fromJWK = async (k: JsonWebKey2020) => {
 		let publicKey, privateKey;
