@@ -69,6 +69,7 @@ export class KeyEncryptionKey {
 
 	static fromStaticPeer = (KeyPair: any) => {
 		return async ({ ephemeralKeyPair, staticPublicKey }: any) => {
+			if (!staticPublicKey) throw new Error("no staticPublicKey found")
 			if (
 				!(
 					staticPublicKey.type === 'X25519KeyAgreementKey2019' ||
