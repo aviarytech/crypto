@@ -1,7 +1,6 @@
 
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base64url } from '$lib/utils/encoding.js';
-import { base58btc as base58 } from "multiformats/bases/base58"
+import { base64url, multibase, base58 } from '$lib/utils/encoding.js';
 import * as ed25519 from '@stablelib/ed25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
@@ -45,9 +44,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		this.controller = controller;
 		this.publicKeyMultibase = publicKeyMultibase;
 		this.privateKeyMultibase = privateKeyMultibase;
-		this.publicKey = base58.decode(publicKeyMultibase);
+		this.publicKey = multibase.decode(publicKeyMultibase);
 		if (privateKeyMultibase) {
-			this.privateKey = base58.decode(privateKeyMultibase);
+			this.privateKey = multibase.decode(privateKeyMultibase);
 		}
 	}
 
@@ -79,10 +78,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	
 	static fromBase58 = async (options: {id?: string, controller?: string, publicKeyBase58: string, privateKeyBase58?: string}) => {
 		let publicKeyMultibase, privateKeyMultibase;
-		console.log(base58.baseDecode(options.publicKeyBase58))
-		publicKeyMultibase = base58.encode(base58.baseDecode(options.publicKeyBase58))
+		publicKeyMultibase = multibase.fromBase58(options.publicKeyBase58)
 		if (options.privateKeyBase58) {
-			privateKeyMultibase = base58.encode(base58.baseDecode(options.privateKeyBase58));
+			privateKeyMultibase = multibase.fromBase58(options.privateKeyBase58)
 		}
 		return new Ed25519VerificationKey2020(
 			options.id ?? `#${publicKeyMultibase.slice(0, 8)}`,

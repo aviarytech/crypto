@@ -3,7 +3,7 @@ import { KeyEncryptionKey } from '$lib/JWE/KeyEncryptionKey.js';
 import { EncryptTransformer } from '$lib/JWE/EncryptTransformer.js';
 import { DecryptTransformer } from '$lib/JWE/DecryptTransformer.js';
 import { Buffer } from 'buffer/index.js';
-import type { Header, IJWE } from '$lib';
+import { X25519KeyAgreementKey2020, type Header, type IJWE } from '$lib';
 import { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
 import { base64url } from '$lib/utils/encoding.js';
@@ -48,7 +48,7 @@ export class JsonWebEncryptionSuite {
 					keypair: epk,
 					epk: epk.publicKeyJwk
 				};
-
+				
 				// derive KEKs for each recipient
 				const derivedResults = await Promise.all(
 					publicKeys.map((staticPublicKey) =>

@@ -70,39 +70,29 @@ export class KeyEncryptionKey {
 	static fromStaticPeer = (KeyPair: any) => {
 		return async ({ ephemeralKeyPair, staticPublicKey }: any) => {
 			if (!staticPublicKey) throw new Error("no staticPublicKey found")
-			if (
-				!(
-					staticPublicKey.type === 'X25519KeyAgreementKey2019' ||
-					staticPublicKey.type === 'JsonWebKey2020'
-				)
-			) {
+			if (!(
+				staticPublicKey.type === 'X25519KeyAgreementKey2019' ||
+				staticPublicKey.type === 'X25519KeyAgreementKey2020' ||
+				staticPublicKey.type === 'JsonWebKey2020'
+			)) {
 				throw new Error(
-					`"staticPublicKey.type" must be "X25519KeyAgreementKey2019" or "JsonWebKey2020".`
-				);
+					`"staticPublicKey.type" must be "X25519KeyAgreementKey2019", "X25519KeyAgreementKey2020" or "JsonWebKey2020".`
+					);
 			}
 			const epkPair =
 				ephemeralKeyPair.keypair.type === 'JsonWebKey2020'
-					? await X25519KeyAgreementKey2019.fromJWK(ephemeralKeyPair.keypair)
-					: await KeyPair.from(ephemeralKeyPair.keypair);
-
+				? await X25519KeyAgreementKey2019.fromJWK(ephemeralKeyPair.keypair)
+				: await KeyPair.from(ephemeralKeyPair.keypair);
+						
 			// "Party U Info"
 			let producerInfo: Uint8Array = epkPair.publicKey;
-
-			// if (epkPair.publicKey.extractable) {
-			//   const temp = await epkPair.export({ type: "JsonWebKey2020" });
-			//   producerInfo = Uint8Array.from(
-			//     Buffer.concat([
-			//       Buffer.from(temp.publicKeyJwk.x, "base64"),
-			//       Buffer.from(temp.publicKeyJwk.y, "base64"),
-			//     ])
-			//   );
-			// }
 
 			// "Party V Info"
 			const consumerInfo = Buffer.from(staticPublicKey.id);
 			const secret = await epkPair.deriveSecret({
 				publicKey: staticPublicKey
 			} as any);
+
 			const keyData = await deriveKey({ secret, producerInfo, consumerInfo });
 			return {
 				kek: await KeyEncryptionKey.createKek({ keyData }),

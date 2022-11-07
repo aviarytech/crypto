@@ -1,9 +1,10 @@
 
 import type { BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base58, base64url } from '$lib/utils/encoding.js';
+import { base58, base64url, multibase } from '$lib/utils/encoding.js';
 import * as ed25519 from '@stablelib/ed25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import type { Ed25519VerificationKey2020 } from './Ed25519VerificationKey2020';
 
 
 @staticImplements<BaseKeyPairStatic>()
@@ -74,6 +75,20 @@ export class Ed25519VerificationKey2018 implements Ed25519VerificationKey2018 {
 		}
 		return new Ed25519VerificationKey2018(k.id, k.controller, publicKeyBase58, privateKeyBase58);
 	};
+
+	static fromMultibase = async (k: Ed25519VerificationKey2020) => {
+		let publicKeyBase58, privateKeyBase58;
+		publicKeyBase58 = multibase.toBase58(k.publicKeyMultibase)
+		if (k.privateKeyMultibase) {
+			privateKeyBase58 = multibase.toBase58(k.privateKeyMultibase)
+		}
+		return new Ed25519VerificationKey2018(
+			k.id ?? `#${publicKeyBase58.slice(0, 8)}`,
+			k.controller ?? `#${publicKeyBase58.slice(0, 8)}`,
+			publicKeyBase58,
+			privateKeyBase58
+		);
+	}
 
 	static fromJWK = async (k: JsonWebKey2020) => {
 		let publicKeyBase58, privateKeyBase58;

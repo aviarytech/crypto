@@ -1,4 +1,6 @@
 import b58 from 'b58';
+import { base58btc } from "multiformats/bases/base58"
+import { CID } from "multiformats"
 import { Buffer } from 'buffer/index.js';
 
 export const base64 = {
@@ -43,3 +45,18 @@ export const base58 = {
 		}
 	}
 };
+
+export const multibase = {
+	toBase58: (val: string): string => {
+		return base58btc.baseEncode(base58btc.decode(val))
+	},
+	fromBase58: (val: string): string => {
+		return base58btc.encode(base58btc.baseDecode(val))
+	},
+	encode: (val: Uint8Array): string => {
+		return base58btc.encode(val)
+	},
+	decode: (val: string): Uint8Array => {
+		return base58btc.decode(val)
+	}
+}

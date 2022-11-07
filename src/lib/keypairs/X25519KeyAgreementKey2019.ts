@@ -2,8 +2,9 @@ import * as x25519 from '@stablelib/x25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
-import { base58, base64url } from '$lib/utils/encoding.js';
+import { base58, base64url, multibase } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { X25519KeyAgreementKey2020 } from './X25519KeyAgreementKey2020';
 
 @staticImplements<BaseKeyPairStatic>()
 export class X25519KeyAgreementKey2019 implements BaseKeyPair {
@@ -55,11 +56,26 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 	static fromJWK = async (k: JsonWebKey2020) => {
 		let publicKeyBase58: string, privateKeyBase58: string;
 		publicKeyBase58 = base58.encode(base64url.decode(k.publicKeyJwk.x));
-		if (k.privateKeyJwk) {
+		if (k.privateKeyJwk && k.privateKeyJwk.d) {
 			privateKeyBase58 = base58.encode(base64url.decode(k.privateKeyJwk.d));
 		}
 		return new X25519KeyAgreementKey2019(k.id, k.controller, publicKeyBase58, privateKeyBase58!);
 	};
+
+	static fromMultibase = async (options: {id?: string, controller?: string, publicKeyMultibase: string, privateKeyMultibase?: string}) => {
+		let publicKeyBase58, privateKeyBase58;
+		publicKeyBase58 = multibase.toBase58(options.publicKeyMultibase)
+
+		if (options.privateKeyMultibase) {
+			privateKeyBase58 = multibase.toBase58(options.privateKeyMultibase)
+		}
+		return new X25519KeyAgreementKey2019(
+			options.id ?? `#${publicKeyBase58.slice(0, 8)}`,
+			options.controller ?? `#${publicKeyBase58.slice(0, 8)}`,
+			publicKeyBase58,
+			privateKeyBase58
+		);
+	}
 
 	async export(
 		options: {
@@ -89,10 +105,13 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 		);
 	}
 
-	async deriveSecret({ publicKey }: { publicKey: JsonWebKeyPair | X25519KeyAgreementKey2019 }) {
+	async deriveSecret({ publicKey }: { publicKey: JsonWebKeyPair | X25519KeyAgreementKey2019 | X25519KeyAgreementKey2020 }) {
 		let remote;
 		if (publicKey.type === 'JsonWebKey2020') {
 			remote = await X25519KeyAgreementKey2019.fromJWK(publicKey)
+		} else if (publicKey.type === 'X25519KeyAgreementKey2020') {
+			remote = await X25519KeyAgreementKey2019.fromMultibase(publicKey)
+
 		} else {
 			remote = new X25519KeyAgreementKey2019(
 				publicKey.id,
@@ -107,7 +126,7 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 		if (!this.privateKey) {
 			throw new Error('No private key available for deriveSecret');
 		}
-		const scalarMultipleResult = x25519.sharedKey(this.privateKey, remote.publicKey, true);
-		return scalarMultipleResult;
+		
+		return x25519.sharedKey(this.privateKey, remote.publicKey, true);
 	}
 }

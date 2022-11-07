@@ -1,6 +1,5 @@
 import { Ed25519VerificationKey2020 } from '$lib/keypairs/Ed25519VerificationKey2020';
-import { base64url } from '$lib/utils/encoding';
-import { base58btc as base58 } from 'multiformats/bases/base58';
+import { base64url, multibase } from '$lib/utils/encoding';
 
 import { describe, expect, test } from 'vitest';
 
@@ -9,7 +8,6 @@ describe('Ed25519VerificationKey2020', () => {
 		const key = 'ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7';
 		
 		const keypair = Ed25519VerificationKey2020.fromBase58({publicKeyBase58: key})
-		console.log((await keypair).publicKeyMultibase)
 	})
 	test('resolves as JWK', async () => {
 		const ed25519 = require('../fixtures/keypairs/Ed25519VerificationKey2020.json');
@@ -25,8 +23,8 @@ describe('Ed25519VerificationKey2020', () => {
 		expect(jwk.privateKeyJwk).to.deep.equal({
 			crv: 'Ed25519',
 			kty: 'OKP',
-			x: base64url.encode(base58.decode(ed25519.publicKeyMultibase)),
-			d: base64url.encode(base58.decode(ed25519.privateKeyMultibase))
+			x: base64url.encode(multibase.decode(ed25519.publicKeyMultibase)),
+			d: base64url.encode(multibase.decode(ed25519.privateKeyMultibase))
 		});
 	});
 
@@ -45,7 +43,7 @@ describe('Ed25519VerificationKey2020', () => {
 		expect(jwk.publicKeyJwk).to.deep.equal({
 			crv: 'Ed25519',
 			kty: 'OKP',
-			x: base64url.encode(base58.decode(ed25519.publicKeyMultibase))
+			x: base64url.encode(multibase.decode(ed25519.publicKeyMultibase))
 		});
 	});
 });
