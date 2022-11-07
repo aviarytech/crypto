@@ -4,7 +4,7 @@ import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.j
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
 import { base58, base64url, multibase } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
-import { X25519KeyAgreementKey2020 } from './X25519KeyAgreementKey2020';
+import type { X25519KeyAgreementKey2020 } from '$lib/keypairs/X25519KeyAgreementKey2020.js';
 
 @staticImplements<BaseKeyPairStatic>()
 export class X25519KeyAgreementKey2019 implements BaseKeyPair {

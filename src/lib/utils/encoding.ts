@@ -1,6 +1,5 @@
 import b58 from 'b58';
 import { base58btc } from "multiformats/bases/base58"
-import { CID } from "multiformats"
 import { Buffer } from 'buffer/index.js';
 
 export const base64 = {

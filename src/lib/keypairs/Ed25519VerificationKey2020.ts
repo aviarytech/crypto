@@ -1,7 +1,7 @@
 
+import * as ed25519 from '@stablelib/ed25519';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { base64url, multibase, base58 } from '$lib/utils/encoding.js';
-import * as ed25519 from '@stablelib/ed25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
