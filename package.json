@@ -1,6 +1,6 @@
 {
 	"name": "@aviarytech/crypto",
-	"version": "0.0.40",
+	"version": "0.0.41",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com/",
 		"access": "public"

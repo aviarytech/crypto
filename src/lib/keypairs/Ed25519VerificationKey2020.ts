@@ -53,8 +53,8 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	static generate = async () => {
 		const key = ed25519.generateKeyPair();
 
-		const pub = base58.encode(key.publicKey);
-		const priv = base58.encode(key.secretKey);
+		const pub = multibase.encode(key.publicKey);
+		const priv = multibase.encode(key.secretKey);
 
 		const controller = `did:key:${pub}`;
 		const id = `${controller}#${pub}`;
