@@ -112,11 +112,12 @@ export class DecryptTransformer {
 		if (!epk)
 			throw new Error(`'epk' not found in recipient header or protected`)
 
+		const apv = header.apv
 		const { kek } = await KeyEncryptionKey.fromEphemeralPeer(this.KeyPairClass)({
 			keyAgreementKey,
-			epk
+			epk,
+			apv
 		});
-		console.log(wrappedKey)
 		const cek = kek.unwrapKey({ wrappedKey });
 		if (!cek) {
 			// failed to unwrap key

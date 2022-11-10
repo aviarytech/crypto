@@ -111,13 +111,11 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 			remote = await X25519KeyAgreementKey2019.fromJWK(publicKey)
 		} else if (publicKey.type === 'X25519KeyAgreementKey2020') {
 			remote = await X25519KeyAgreementKey2019.fromMultibase(publicKey)
-
 		} else {
 			remote = new X25519KeyAgreementKey2019(
 				publicKey.id,
 				publicKey.controller,
-				publicKey.publicKeyBase58,
-				this.privateKeyBase58
+				publicKey.publicKeyBase58
 			)
 		}
 		if (!remote.publicKey) {
@@ -126,7 +124,6 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 		if (!this.privateKey) {
 			throw new Error('No private key available for deriveSecret');
 		}
-		
 		return x25519.sharedKey(this.privateKey, remote.publicKey, true);
 	}
 }

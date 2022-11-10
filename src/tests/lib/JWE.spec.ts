@@ -73,7 +73,7 @@ describe('JWE', () => {
 		expect(result.body).to.equal('hello world');
 	});
 
-	test.only('Can decrypt data w/ epk in protected', async () => {
+	test('Can decrypt data w/ epk in protected', async () => {
 		const cipher = new JsonWebEncryptionSuite();
 		const keyAgreementKey = new X25519KeyAgreementKey2019(
 			'did:web:verifiable.ink#1',
