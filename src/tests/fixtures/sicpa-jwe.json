@@ -1,0 +1,14 @@
+{
+	"protected": "eyJ0eXAiOiJhcHBsaWNhdGlvbi9kaWRjb21tLWVuY3J5cHRlZCtqc29uIiwiYWxnIjoiRUNESC1FUytBMjU2S1ciLCJlbmMiOiJYQzIwUCIsImFwdiI6InUtaFBtY2U1V0FsOGFSNlhDVjh5MGJIam9sTG42NEZTX2pYR0hPUEtkTzQiLCJlcGsiOnsiY3J2IjoiWDI1NTE5IiwieCI6IkdsYUpMdXNyZzFSZ0Z1ZkpoYjZDVjNlaEZJMUZrY3J2RTQ1SG1MdWxFRTQiLCJrdHkiOiJPS1AifX0",
+	"recipients": [
+		{
+			"header": {
+				"kid": "did:web:verifiable.ink#1"
+			},
+			"encrypted_key": "6FnUm0LrJXdMzSQ0yLGSm0QrkEEGc11hM7y-4IAt6ncuKXGsvzAz8w"
+		}
+	],
+	"iv": "-MIMlO-74NWB5OGaJWiKDeyIRR3bKD9k",
+	"ciphertext": "ux1kwQGynCggR5Xp72TPIJAgJRKVogpAeheNwyHvj21KWpchuZRipvZwpp8vQfMuD4gsGMK2SQQ-LCQct5-kk4mZ3JRgpOX6LbqkkC5d4-TY729dyqMZoJHOKQP8gB7up_AbrszmQ42jRhIp8rVkFP0NTolond5vkdJAEjET2J8Z_OUrra0pIP7qGNut9dr-Qc5PgBdmDuOhfd8mytcUmCssLzy6Y107NMJqHynrhHnZUBjqP99NMuN-XASxhyJC8-dsUVS7LznQvzKIR-cEIn68LJQu9C_GOUGlqMxhQAXbfynxqDT0DdPrl4R3T-0LbxQIJF-8XmBhth1-XjlxVpkbnjggxQHzaulyfK-9nJwWsG2x-U08HFALFKxnEPl0H83x000hWhhcoPbVpyS4rGYzacCMwBx8tppyfuzOqBe_IW7T11lkBbYpI_R7KbZ8G_q55nQ6EBprom_aao63OYhV_oapFco6x6mFAyIACWy8fPaqViRaIk1lN04LBG6OHLK3o5M716mXevSkYe4zyoOKXIytF_AdKKiqXfrJwrZqSuSgKJvAta2XfsonyvtDvnZLUxrdPov1tf1menP_SIqmSA",
+	"tag": "AP52jUAKdsuFrQI_s3GCUg"
+}

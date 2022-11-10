@@ -106,14 +106,18 @@ export class DecryptTransformer {
 		// calls which may even need to hit the network (e.g., Web KMS)
 
 		// derive KEK and unwrap CEK
-		const { epk } = recipient.header;
+		let { epk } = recipient.header;
+		if (!epk)
+			epk = header.epk
+		if (!epk)
+			throw new Error(`'epk' not found in recipient header or protected`)
 
 		const { kek } = await KeyEncryptionKey.fromEphemeralPeer(this.KeyPairClass)({
 			keyAgreementKey,
 			epk
 		});
-
-		const cek = await kek.unwrapKey({ wrappedKey });
+		console.log(wrappedKey)
+		const cek = kek.unwrapKey({ wrappedKey });
 		if (!cek) {
 			// failed to unwrap key
 			return null;

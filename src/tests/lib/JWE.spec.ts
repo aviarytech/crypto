@@ -3,6 +3,7 @@ import { X25519KeyAgreementKey2019, JsonWebEncryptionSuite } from '$lib';
 
 const plaintext = require('../fixtures/plaintext.json');
 const jwe = require('../fixtures/jwe.json');
+const jwe2 = require('../fixtures/sicpa-jwe.json');
 const key = require('../fixtures/keypairs/X25519KeyAgreementKey2019.json');
 const key2 = require('../fixtures/keypairs/X25519KeyAgreementKey2020.json')
 
@@ -66,6 +67,23 @@ describe('JWE', () => {
 
 		const result = await cipher.decrypt({
 			jwe,
+			keyAgreementKey
+		});
+
+		expect(result.body).to.equal('hello world');
+	});
+
+	test.only('Can decrypt data w/ epk in protected', async () => {
+		const cipher = new JsonWebEncryptionSuite();
+		const keyAgreementKey = new X25519KeyAgreementKey2019(
+			'did:web:verifiable.ink#1',
+			'did:web:verifiable.ink',
+			key.publicKeyBase58,
+			key.privateKeyBase58
+		);
+
+		const result = await cipher.decrypt({
+			jwe: jwe2,
 			keyAgreementKey
 		});
 

@@ -58,6 +58,7 @@ export class KeyEncryptionKey {
 	 */
 	unwrapKey({ wrappedKey }: UnwrapKeyOptions): Uint8Array | null {
 		const _wrappedKey = base64url.decode(wrappedKey);
+		console.log(wrappedKey)
 		try {
 			return this.aeskw.unwrapKey(_wrappedKey);
 		} catch (e) {
@@ -108,7 +109,7 @@ export class KeyEncryptionKey {
 			if (!(epk && typeof epk === 'object')) {
 				throw new TypeError('"epk" must be an object.');
 			}
-
+			console.log(keyAgreementKey)
 			// convert to LD key for Web KMS
 			const ephemeralPublicKey = {
 				type: 'JsonWebKey2020',
