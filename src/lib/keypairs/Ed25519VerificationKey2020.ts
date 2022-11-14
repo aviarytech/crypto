@@ -37,6 +37,8 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 			}
 		};
 	};
+	sign?: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;
+	verify?: ({ data, signature }: { data: Uint8Array; signature: Uint8Array }) => Promise<boolean>;
 
 	constructor(id: string, controller: string, publicKeyMultibase: string, privateKeyMultibase?: string) {
 		this.type = 'Ed25519VerificationKey2020';
@@ -47,7 +49,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		this.publicKey = multibase.decode(publicKeyMultibase);
 		if (privateKeyMultibase) {
 			this.privateKey = multibase.decode(privateKeyMultibase);
+			this.sign = this.signer(this.privateKey).sign
 		}
+		this.verify = this.verifier(this.publicKey).verify
 	}
 
 	static generate = async () => {

@@ -1,6 +1,6 @@
 
 import * as ed25519 from '@stablelib/ed25519';
-import type { BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
+import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { base58, base64url, multibase } from '$lib/utils/encoding.js';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
@@ -8,7 +8,7 @@ import type { Ed25519VerificationKey2020 } from '$lib/keypairs/Ed25519Verificati
 
 
 @staticImplements<BaseKeyPairStatic>()
-export class Ed25519VerificationKey2018 implements Ed25519VerificationKey2018 {
+export class Ed25519VerificationKey2018 implements BaseKeyPair {
 	id: string;
 	type: 'Ed25519VerificationKey2018';
 	controller: string;
@@ -38,6 +38,8 @@ export class Ed25519VerificationKey2018 implements Ed25519VerificationKey2018 {
 			}
 		};
 	};
+	sign?: ({ data }: { data: Uint8Array; }) => Promise<Uint8Array>;
+	verify: ({ data, signature }: { data: Uint8Array; signature: Uint8Array; }) => Promise<boolean>;
 
 	constructor(id: string, controller: string, publicKeyBase58: string, privateKeyBase58?: string) {
 		this.type = 'Ed25519VerificationKey2018';
@@ -48,7 +50,9 @@ export class Ed25519VerificationKey2018 implements Ed25519VerificationKey2018 {
 		this.publicKey = base58.decode(publicKeyBase58);
 		if (privateKeyBase58) {
 			this.privateKey = base58.decode(privateKeyBase58);
+			this.sign = this.signer(this.privateKey).sign
 		}
+		this.verify = this.verifier(this.publicKey).verify
 	}
 
 	static generate = async () => {
