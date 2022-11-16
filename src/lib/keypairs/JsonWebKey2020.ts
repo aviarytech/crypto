@@ -5,6 +5,8 @@ import type { BaseKeyPair } from "$lib/keypairs/BaseKeyPair.js";
 import { Ed25519VerificationKey2018 } from "$lib/keypairs/Ed25519VerificationKey2018.js";
 import { EcdsaSecp256k1KeyPair } from "$lib/keypairs/Secp256k1KeyPair.js";
 import { X25519KeyAgreementKey2019 } from "$lib/keypairs/X25519KeyAgreementKey2019.js";
+import { Ed25519VerificationKey2020 } from "$lib/keypairs/Ed25519VerificationKey2020.js";
+import { X25519KeyAgreementKey2020 } from "$lib/keypairs/X25519KeyAgreementKey2020.js";
 
 
 const applyJwa = async (k: any, options?: any) => {
@@ -64,6 +66,9 @@ const getKeyPairForType = (k: any) => {
 	if (k.type === 'Ed25519VerificationKey2018') {
 		return Ed25519VerificationKey2018;
 	}
+	if (k.type === 'Ed25519VerificationKey2020') {
+		return Ed25519VerificationKey2020;
+	}
 	// if (k.type === "EcdsaSecp256k1VerificationKey2019") {
 	//   return Secp256k1KeyPair;
 	// }
@@ -72,6 +77,9 @@ const getKeyPairForType = (k: any) => {
 	// }
 	if (k.type === 'X25519KeyAgreementKey2019') {
 		return X25519KeyAgreementKey2019;
+	}
+	if (k.type === 'X25519KeyAgreementKey2020') {
+		return X25519KeyAgreementKey2020
 	}
 
 	throw new Error('getKeyPairForType does not support type: ' + k.type);
