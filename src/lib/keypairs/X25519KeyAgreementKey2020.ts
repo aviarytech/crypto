@@ -2,7 +2,7 @@ import * as x25519 from '@stablelib/x25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
-import { base64url, multibase } from '$lib/utils/encoding.js';
+import { base58, base64url, multibase, MULTICODEC_X25519_PRIV_HEADER, MULTICODEC_X25519_PUB_HEADER } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import type { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 
@@ -22,9 +22,9 @@ export class X25519KeyAgreementKey2020 implements BaseKeyPair {
 		this.controller = controller;
 		this.publicKeyMultibase = publicKeyMultibase;
 		this.privateKeyMultibase = privateKeyMultibase;
-		this.publicKey = multibase.decode(publicKeyMultibase);
+		this.publicKey = multibase.decode(MULTICODEC_X25519_PUB_HEADER, publicKeyMultibase);
 		if (privateKeyMultibase) {
-			this.privateKey = multibase.decode(privateKeyMultibase);
+			this.privateKey = multibase.decode(MULTICODEC_X25519_PRIV_HEADER, privateKeyMultibase);
 		}
 	}
 
@@ -39,8 +39,8 @@ export class X25519KeyAgreementKey2020 implements BaseKeyPair {
 		return new X25519KeyAgreementKey2020(
 			id,
 			controller,
-			multibase.encode(key.publicKey),
-			multibase.encode(key.secretKey)
+			multibase.encode(MULTICODEC_X25519_PUB_HEADER, key.publicKey),
+			multibase.encode(MULTICODEC_X25519_PRIV_HEADER, key.secretKey)
 		);
 	};
 
@@ -54,16 +54,16 @@ export class X25519KeyAgreementKey2020 implements BaseKeyPair {
 	};
 
 	static fromBase58 = async (k: X25519KeyAgreementKey2019) => {
-		let publicKeyBase58, privateKeyBase58;
-		publicKeyBase58 = multibase.fromBase58(k.publicKeyBase58)
+		let publicKeyMultibase, privateKeyMultibase;
+		publicKeyMultibase = multibase.encode(MULTICODEC_X25519_PUB_HEADER, base58.decode(k.publicKeyBase58))
 		if (k.privateKeyBase58) {
-			privateKeyBase58 = multibase.fromBase58(k.privateKeyBase58)
+			privateKeyMultibase = multibase.encode(MULTICODEC_X25519_PRIV_HEADER, base58.decode(k.privateKeyBase58))
 		}
 		return new X25519KeyAgreementKey2020(
-			k.id ?? `#${publicKeyBase58.slice(0, 8)}`,
-			k.controller ?? `#${publicKeyBase58.slice(0, 8)}`,
-			publicKeyBase58,
-			privateKeyBase58
+			k.id ?? `#${publicKeyMultibase.slice(0, 8)}`,
+			k.controller ?? `#${publicKeyMultibase.slice(0, 8)}`,
+			publicKeyMultibase,
+			privateKeyMultibase
 		);
 	}
 
@@ -71,9 +71,9 @@ export class X25519KeyAgreementKey2020 implements BaseKeyPair {
 		let publicKey, privateKey;
 		if (!k.publicKeyJwk.x)
 			throw new Error('Public Key Not found')
-		publicKey = multibase.encode(base64url.decode(k.publicKeyJwk.x));
+		publicKey = multibase.encode(MULTICODEC_X25519_PUB_HEADER, base64url.decode(k.publicKeyJwk.x));
 		if (k.privateKeyJwk && k.privateKeyJwk.d) {
-			privateKey = multibase.encode(base64url.decode(k.privateKeyJwk.d));
+			privateKey = multibase.encode(MULTICODEC_X25519_PRIV_HEADER, base64url.decode(k.privateKeyJwk.d));
 		}
 		return new X25519KeyAgreementKey2020(k.id, k.controller, publicKey, privateKey);
 	};

@@ -2,7 +2,7 @@ import * as x25519 from '@stablelib/x25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
-import { base58, base64url, multibase } from '$lib/utils/encoding.js';
+import { base58, base64url, multibase, MULTICODEC_X25519_PRIV_HEADER, MULTICODEC_X25519_PUB_HEADER } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import type { X25519KeyAgreementKey2020 } from '$lib/keypairs/X25519KeyAgreementKey2020.js';
 
@@ -64,10 +64,10 @@ export class X25519KeyAgreementKey2019 implements BaseKeyPair {
 
 	static fromMultibase = async (options: {id?: string, controller?: string, publicKeyMultibase: string, privateKeyMultibase?: string}) => {
 		let publicKeyBase58, privateKeyBase58;
-		publicKeyBase58 = multibase.toBase58(options.publicKeyMultibase)
+		publicKeyBase58 = base58.encode(multibase.decode(MULTICODEC_X25519_PUB_HEADER, options.publicKeyMultibase))
 
 		if (options.privateKeyMultibase) {
-			privateKeyBase58 = multibase.toBase58(options.privateKeyMultibase)
+			privateKeyBase58 = base58.encode(multibase.decode(MULTICODEC_X25519_PRIV_HEADER, options.privateKeyMultibase))
 		}
 		return new X25519KeyAgreementKey2019(
 			options.id ?? `#${publicKeyBase58.slice(0, 8)}`,

@@ -1,7 +1,7 @@
 
 import * as ed25519 from '@stablelib/ed25519';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base64url, multibase, base58 } from '$lib/utils/encoding.js';
+import { base64url, multibase, base58, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC_ED25519_PRIV_HEADER } from '$lib/utils/encoding.js';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
@@ -46,9 +46,10 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		this.controller = controller;
 		this.publicKeyMultibase = publicKeyMultibase;
 		this.privateKeyMultibase = privateKeyMultibase;
-		this.publicKey = multibase.decode(publicKeyMultibase);
+		console.log(publicKeyMultibase)
+		this.publicKey = multibase.decode(MULTICODEC_ED25519_PUB_HEADER, publicKeyMultibase);
 		if (privateKeyMultibase) {
-			this.privateKey = multibase.decode(privateKeyMultibase);
+			this.privateKey = multibase.decode(MULTICODEC_ED25519_PRIV_HEADER, privateKeyMultibase);
 			this.sign = this.signer(this.privateKey).sign
 		}
 		this.verify = this.verifier(this.publicKey).verify
@@ -57,8 +58,8 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	static generate = async () => {
 		const key = ed25519.generateKeyPair();
 
-		const pub = multibase.encode(key.publicKey);
-		const priv = multibase.encode(key.secretKey);
+		const pub = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, key.publicKey);
+		const priv = multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, key.secretKey);
 
 		const controller = `did:key:${pub}`;
 		const id = `${controller}#${pub}`;
@@ -82,9 +83,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	
 	static fromBase58 = async (options: {id?: string, controller?: string, publicKeyBase58: string, privateKeyBase58?: string}) => {
 		let publicKeyMultibase, privateKeyMultibase;
-		publicKeyMultibase = multibase.fromBase58(options.publicKeyBase58)
+		publicKeyMultibase = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, base58.decode(options.publicKeyBase58))
 		if (options.privateKeyBase58) {
-			privateKeyMultibase = multibase.fromBase58(options.privateKeyBase58)
+			privateKeyMultibase = multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, base58.decode(options.privateKeyBase58))
 		}
 		return new Ed25519VerificationKey2020(
 			options.id ?? `#${publicKeyMultibase.slice(0, 8)}`,

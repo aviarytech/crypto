@@ -71,4 +71,22 @@ describe('JWE', () => {
 
 		expect(result.body).to.equal('hello world');
 	});
+
+	// moved didcomm to sicpa lib so this might not be needed
+	test.skip('Can decrypt data w/ epk in protected', async () => {
+		const cipher = new JsonWebEncryptionSuite();
+		const keyAgreementKey = new X25519KeyAgreementKey2019(
+			'did:web:verifiable.ink#1',
+			'did:web:verifiable.ink',
+			key.publicKeyBase58,
+			key.privateKeyBase58
+		);
+
+		const result = await cipher.decrypt({
+			jwe: jwe,
+			keyAgreementKey
+		});
+
+		expect(result.body).to.equal('hello world');
+	});
 });

@@ -1,5 +1,5 @@
 import { X25519KeyAgreementKey2020 } from '$lib/keypairs/X25519KeyAgreementKey2020';
-import { base64url, multibase } from '$lib/utils/encoding';
+import { base64url, multibase, MULTICODEC_X25519_PRIV_HEADER, MULTICODEC_X25519_PUB_HEADER } from '$lib/utils/encoding';
 import { describe, expect, test } from 'vitest';
 
 describe('X25519KeyAgreementKey2020', () => {
@@ -17,8 +17,8 @@ describe('X25519KeyAgreementKey2020', () => {
 		expect(jwk.privateKeyJwk).to.deep.equal({
 			crv: 'X25519',
 			kty: 'OKP',
-			x: base64url.encode(multibase.decode(x25519key.publicKeyMultibase)),
-			d: base64url.encode(multibase.decode(x25519key.privateKeyMultibase))
+			x: base64url.encode(multibase.decode(MULTICODEC_X25519_PUB_HEADER, x25519key.publicKeyMultibase)),
+			d: base64url.encode(multibase.decode(MULTICODEC_X25519_PRIV_HEADER, x25519key.privateKeyMultibase))
 		});
 	});
 
@@ -37,7 +37,7 @@ describe('X25519KeyAgreementKey2020', () => {
 		expect(jwk.publicKeyJwk).to.deep.equal({
 			crv: 'X25519',
 			kty: 'OKP',
-			x: base64url.encode(multibase.decode(x25519key.publicKeyMultibase))
+			x: base64url.encode(multibase.decode(MULTICODEC_X25519_PUB_HEADER, x25519key.publicKeyMultibase))
 		});
 	});
 });
