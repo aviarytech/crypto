@@ -46,7 +46,6 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		this.controller = controller;
 		this.publicKeyMultibase = publicKeyMultibase;
 		this.privateKeyMultibase = privateKeyMultibase;
-		console.log(publicKeyMultibase)
 		this.publicKey = multibase.decode(MULTICODEC_ED25519_PUB_HEADER, publicKeyMultibase);
 		if (privateKeyMultibase) {
 			this.privateKey = multibase.decode(MULTICODEC_ED25519_PRIV_HEADER, privateKeyMultibase);

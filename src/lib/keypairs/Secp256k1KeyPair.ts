@@ -4,9 +4,7 @@ import { Buffer } from 'buffer/index.js';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { sha256Uint8Array } from '$lib/utils/sha256.js';
-import { base58, base64url } from '$lib/utils/encoding.js';
-import { SECP256K1_MULTICODEC_IDENTIFIER } from '$lib/constants.js';
-import { getMultibaseFingerprintFromPublicKeyBytes } from '$lib/utils/multibase.js';
+import { base58, base64url, multibase, MULTICODEC_ED25519_PRIV_HEADER } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 export interface EcdsaSecp256k1VerificationKey2019 extends BaseKeyPair {
@@ -68,10 +66,7 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 	static generate = async () => {
 		const privKey = secp.utils.randomPrivateKey();
 		const pubKey = secp.getPublicKey(privKey);
-		const fingerprint = getMultibaseFingerprintFromPublicKeyBytes(
-			pubKey,
-			SECP256K1_MULTICODEC_IDENTIFIER
-		);
+		const fingerprint = multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, pubKey)
 		const controller = `did:key:${fingerprint}`;
 		const id = `${controller}#${fingerprint}`;
 

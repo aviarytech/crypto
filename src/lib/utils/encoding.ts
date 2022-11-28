@@ -13,6 +13,10 @@ export const MULTICODEC_ED25519_PRIV_HEADER = new Uint8Array([0x80, 0x26]);
 export const MULTICODEC_X25519_PUB_HEADER = new Uint8Array([0xec, 0x01]);
 // multicodec x25519-priv header as varint
 export const MULTICODEC_X25519_PRIV_HEADER = new Uint8Array([0x82, 0x26]);
+// multicode secp256k1-pub header as varint
+export const MULTICODEC_SECP256K1_PUB_HEADER = new Uint8Array([0xe7, 0x01]);
+// multicode secp256k1-priv header as varint
+export const MULTICODEC_SECP256K1_PRIV_HEADER = new Uint8Array([0x13, 0x01]);
 
 export const base64 = {
 	encode: (unencoded: any): string => {

@@ -13,7 +13,6 @@ export * from '$lib/keypairs/Secp256k1KeyPair.js';
 
 export * from '$lib/LDP/proof.js';
 
-export * from '$lib/utils/multibase.js';
 export * from '$lib/utils/encoding.js';
 export * from '$lib/utils/sha256.js';
 export * from '$lib/constants.js';
