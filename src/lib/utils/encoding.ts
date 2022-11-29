@@ -62,7 +62,7 @@ export const multibase = {
 		const mcBytes = new Uint8Array(header.length + val.length);
 		mcBytes.set(header)
 		mcBytes.set(val, header.length)
-		return MULTIBASE_BASE58BTC_HEADER + base58btc.encode(val)
+		return MULTIBASE_BASE58BTC_HEADER + base58.encode(mcBytes)
 	},
 	decode: (header: Uint8Array, val: string): Uint8Array => {
 		const mcValue = base58.decode(val.substring(1))

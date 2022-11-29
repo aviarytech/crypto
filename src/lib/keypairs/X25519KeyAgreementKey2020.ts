@@ -1,7 +1,7 @@
 import * as x25519 from '@stablelib/x25519';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base58, base64url, multibase, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC_X25519_PRIV_HEADER, MULTICODEC_X25519_PUB_HEADER } from '$lib/utils/encoding.js';
+import { base58, base64url, multibase, MULTICODEC_X25519_PRIV_HEADER, MULTICODEC_X25519_PUB_HEADER } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import type { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 
@@ -30,7 +30,7 @@ export class X25519KeyAgreementKey2020 implements BaseKeyPair {
 	static generate = async () => {
 		const key = x25519.generateKeyPair();
 
-		const fingerprint = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, key.publicKey)
+		const fingerprint = multibase.encode(MULTICODEC_X25519_PUB_HEADER, key.publicKey)
 
 		const controller = `did:key:${fingerprint}`;
 		const id = `${controller}#${fingerprint}`;

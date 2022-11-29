@@ -40,4 +40,10 @@ describe('X25519KeyAgreementKey2020', () => {
 			x: base64url.encode(multibase.decode(MULTICODEC_X25519_PUB_HEADER, x25519key.publicKeyMultibase))
 		});
 	});
+
+	test('can generate', async () => {
+		const key = await X25519KeyAgreementKey2020.generate()
+		expect(key).toHaveProperty('publicKey')
+		expect(key).toHaveProperty('privateKey')
+	})
 });

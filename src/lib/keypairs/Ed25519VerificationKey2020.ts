@@ -57,11 +57,13 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	static generate = async () => {
 		const key = ed25519.generateKeyPair();
 
+		const fingerprint = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, key.publicKey)
+
 		const pub = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, key.publicKey);
 		const priv = multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, key.secretKey);
 
-		const controller = `did:key:${pub}`;
-		const id = `${controller}#${pub}`;
+		const controller = `did:key:${fingerprint}`;
+		const id = `${controller}#${fingerprint}`;
 
 		return new Ed25519VerificationKey2020(
 			id,

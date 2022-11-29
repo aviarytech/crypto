@@ -46,4 +46,10 @@ describe('Ed25519VerificationKey2020', () => {
 			x: base64url.encode(multibase.decode(MULTICODEC_ED25519_PUB_HEADER, ed25519.publicKeyMultibase))
 		});
 	});
+
+	test('can generate', async () => {
+		const key = await Ed25519VerificationKey2020.generate()
+		expect(key).toHaveProperty('publicKey')
+		expect(key).toHaveProperty('privateKey')
+	})
 });
