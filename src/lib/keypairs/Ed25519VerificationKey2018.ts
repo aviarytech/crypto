@@ -5,10 +5,50 @@ import { base58, base64url, multibase, MULTICODEC_ED25519_PRIV_HEADER, MULTICODE
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import type { Ed25519VerificationKey2020 } from '$lib/keypairs/Ed25519VerificationKey2020.js';
+import { LinkedDataProof } from '$lib/LDP/proof.js';
+import type { DocumentLoader } from '$lib/interfaces.js';
+import { createVerifyData } from '$lib/utils/vcs.js';
 
+export class Ed25519Signature2018LinkedDataProof extends LinkedDataProof {
+	public jws: string;
+
+	constructor(
+		type: string,
+		proofPurpose: string,
+		verificationMethod: string,
+		created: string,
+		jws?: string,
+		challenge?: string,
+		domain?: string
+	) {
+		super(type, proofPurpose, verificationMethod, challenge, domain, created);
+		this.jws = jws;
+	}
+
+	toJSON() {
+		let val: any = {
+			type: this.type,
+			proofPurpose: this.proofPurpose,
+			verificationMethod: this.verificationMethod,
+			created: this.created
+		};
+		if (this.jws) {
+			val.jws = this.jws;
+		}
+		if (this.challenge) {
+			val.challenge = this.challenge;
+		}
+		if (this.domain) {
+			val.domain = this.domain;
+		}
+		return val;
+	}
+}
 
 @staticImplements<BaseKeyPairStatic>()
 export class Ed25519VerificationKey2018 implements BaseKeyPair {
+	ALG = 'EdDSA';
+
 	id: string;
 	type: 'Ed25519VerificationKey2018';
 	controller: string;
@@ -131,5 +171,36 @@ export class Ed25519VerificationKey2018 implements BaseKeyPair {
 				  }
 				: undefined
 		);
+	}
+
+	async createProof(
+		document: any,
+		purpose: string,
+		documentLoader: DocumentLoader,
+		options?: { domain?: string, challenge?: string }
+	): Promise<Ed25519Signature2018LinkedDataProof> {
+		if (!this.privateKey) {
+			throw new Error("No privateKey, Can't create proof");
+		}
+		let proof = new Ed25519Signature2018LinkedDataProof(
+			this.type, purpose, this.id, null, null, options ? options.challenge : null, options? options.domain : null
+		)
+
+		// create data to sign
+		const verifyData = await createVerifyData({
+			document,
+			proof: { '@context': document['@context'], ...proof },
+			documentLoader
+		});
+
+		const sig = await this.sign!({ data: verifyData });
+		
+		proof.jws = (
+			base64url.encode(Buffer.from(JSON.stringify({ b64: false, crit: ['b64'], alg: this.ALG }))) +
+			'..' +
+			base64url.encode(sig)
+		);
+
+		return proof.toJSON()
 	}
 }
