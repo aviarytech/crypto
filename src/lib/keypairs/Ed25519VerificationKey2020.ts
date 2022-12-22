@@ -5,7 +5,7 @@ import { base64url, multibase, base58, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import { LinkedDataProof } from '$lib/LDP/proof.js';
-
+import { Buffer } from 'buffer/index.js';
 import type { DocumentLoader } from '$lib/interfaces.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
 

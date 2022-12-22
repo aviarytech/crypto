@@ -8,6 +8,7 @@ import type { Ed25519VerificationKey2020 } from '$lib/keypairs/Ed25519Verificati
 import { LinkedDataProof } from '$lib/LDP/proof.js';
 import type { DocumentLoader } from '$lib/interfaces.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
+import { Buffer } from 'buffer/index.js';
 
 export class Ed25519Signature2018LinkedDataProof extends LinkedDataProof {
 	public jws: string;
@@ -201,6 +202,6 @@ export class Ed25519VerificationKey2018 implements BaseKeyPair {
 			base64url.encode(sig)
 		);
 
-		return proof.toJSON()
+		return proof.toJSON().filter(p => p)
 	}
 }
