@@ -202,6 +202,6 @@ export class Ed25519VerificationKey2018 implements BaseKeyPair {
 			base64url.encode(sig)
 		);
 
-		return proof.toJSON().filter(p => p)
+		return proof.toJSON()
 	}
 }
