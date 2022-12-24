@@ -98,11 +98,9 @@ export class Ed25519VerificationKey2018 implements BaseKeyPair {
 
 	static generate = async () => {
 		const key = ed25519.generateKeyPair();
-
-		const pub = base58.encode(key.publicKey);
-
-		const controller = `did:key:${pub}`;
-		const id = `${controller}#${pub}`;
+		const multibasePub = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, key.publicKey)
+		const controller = `did:key:${multibasePub}`;
+		const id = `${controller}#${multibasePub}`;
 
 		return new Ed25519VerificationKey2018(
 			id,
