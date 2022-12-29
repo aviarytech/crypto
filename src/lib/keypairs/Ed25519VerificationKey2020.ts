@@ -48,6 +48,8 @@ export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 @staticImplements<BaseKeyPairStatic>()
 export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	ALG = 'EdDSA'
+	SUITE_TYPE = 'Ed25519Signature2020'
+
 
 	id: string;
 	type: 'Ed25519VerificationKey2020';
@@ -186,7 +188,7 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 			throw new Error("No privateKey, Can't create proof");
 		}
 		let proof = new Ed25519Signature2020LinkedDataProof(
-			this.type, purpose, this.id, null, null, options ? options.challenge : null, options? options.domain : null
+			this.SUITE_TYPE, purpose, this.id, null, null, options ? options.challenge : null, options? options.domain : null
 		)
 
 		// create data to sign
