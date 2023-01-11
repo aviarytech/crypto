@@ -196,7 +196,7 @@ export class Ed25519VerificationKey2018 implements BaseKeyPair {
 		const sig = await this.sign!({ data: verifyData });
 		
 		proof.jws = (
-			base64url.encode(Buffer.from(JSON.stringify({ b64: false, crit: ['b64'], alg: this.ALG }))) +
+			base64url.encode(Buffer.from(JSON.stringify({ alg: this.ALG, b64: false, crit: ['b64'] }))) +
 			'..' +
 			base64url.encode(sig)
 		);

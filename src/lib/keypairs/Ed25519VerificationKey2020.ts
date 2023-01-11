@@ -1,7 +1,7 @@
 
 import * as ed25519 from '@stablelib/ed25519';
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base64url, multibase, base58, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC_ED25519_PRIV_HEADER } from '$lib/utils/encoding.js';
+import { base64url, multibase, base58, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC_ED25519_PRIV_HEADER, MULTIBASE_BASE58BTC_HEADER } from '$lib/utils/encoding.js';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import { LinkedDataProof } from '$lib/LDP/proof.js';
@@ -10,19 +10,19 @@ import type { DocumentLoader } from '$lib/interfaces.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
 
 export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
-	public jws: string;
+	public proofValue: string;
 
 	constructor(
 		type: string,
 		proofPurpose: string,
 		verificationMethod: string,
 		created: string,
-		jws?: string,
+		proofValue?: string,
 		challenge?: string,
 		domain?: string
 	) {
 		super(type, proofPurpose, verificationMethod, challenge, domain, created);
-		this.jws = jws;
+		this.proofValue = proofValue;
 	}
 
 	toJSON() {
@@ -32,8 +32,8 @@ export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 			verificationMethod: this.verificationMethod,
 			created: this.created
 		};
-		if (this.jws) {
-			val.jws = this.jws;
+		if (this.proofValue) {
+			val.proofValue = this.proofValue;
 		}
 		if (this.challenge) {
 			val.challenge = this.challenge;
@@ -194,18 +194,14 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		// create data to sign
 		const verifyData = await createVerifyData({
 			document,
-			proof: { '@context': document['@context'], ...proof },
+			proof: { '@context': document['@context'], ...proof.toJSON() },
 			documentLoader
 		});
 
 		const sig = await this.sign!({ data: verifyData });
 		
-		proof.jws = (
-			base64url.encode(Buffer.from(JSON.stringify({ b64: false, crit: ['b64'], alg: this.ALG }))) +
-			'..' +
-			base64url.encode(sig)
-		);
-
+		proof.proofValue = multibase.encode(new Uint8Array([]), sig)
+		
 		return proof.toJSON()
 	}
 }

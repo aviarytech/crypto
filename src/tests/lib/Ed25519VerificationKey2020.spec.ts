@@ -1,8 +1,15 @@
 import { Ed25519VerificationKey2020 } from '$lib/keypairs/Ed25519VerificationKey2020';
 import { base64url, multibase, MULTICODEC_ED25519_PRIV_HEADER, MULTICODEC_ED25519_PUB_HEADER } from '$lib/utils/encoding';
 
+import * as vc from '@digitalbazaar/vc';
+import { Ed25519VerificationKey2020 as dbKey } from '@digitalbazaar/ed25519-verification-key-2020';
+import { Ed25519Signature2020 as dbSuite } from '@digitalbazaar/ed25519-signature-2020';
+
 import { describe, expect, test } from 'vitest';
 import { documentLoader } from '../fixtures/documentLoader';
+var SegfaultHandler = require('segfault-handler');
+
+SegfaultHandler.registerHandler("crash.log"); // With no argument, SegfaultHandler will generate a generic log file name
 
 describe('Ed25519VerificationKey2020', () => {
 	test('fromBase58', async () => {
@@ -73,6 +80,41 @@ describe('Ed25519VerificationKey2020', () => {
 
 		expect(result.challenge).to.be.equal('challenge123');
 		expect(result).to.not.have.property('domain');
-		expect(result).to.have.property('jws')
+		expect(result).to.have.property('proofValue')
+	});
+
+	test.only(`Can create proof that verifies with digital bazaar`, async () => {
+		const ed25519 = {...require('../fixtures/keypairs/Ed25519VerificationKey2020.json')};
+		const credential = {...require(`../fixtures/credentials/case-1.json`), issuer: {id: ed25519.controller}};
+		const key = new Ed25519VerificationKey2020(
+			ed25519.id,
+			ed25519.controller,
+			ed25519.publicKeyMultibase,
+			ed25519.privateKeyMultibase
+		);
+
+		const result = await key.createProof(
+			credential,
+			'assertionMethod',
+			documentLoader,
+			{challenge: 'challenge123'}
+		);
+
+		expect(result.challenge).to.be.equal('challenge123');
+		expect(result).to.not.have.property('domain');
+		expect(result).to.have.property('proofValue');
+		const keyPair = new dbKey({
+			id: ed25519.id,
+			controller: ed25519.controller,
+			publicKeyMultibase: ed25519.publicKeyMultibase,
+		});
+		const suite = new dbSuite({ key: keyPair });
+		const res = await vc.verifyCredential({
+			credential: {...credential, proof: result},
+			challenge: 'challenge123',
+			suite,
+			documentLoader
+		});
+		expect(res.verified).toBeTruthy()
 	});
 });
