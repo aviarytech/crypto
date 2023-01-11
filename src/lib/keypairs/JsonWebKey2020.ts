@@ -216,12 +216,20 @@ export class JsonWebKeyPair implements JsonWebKey2020 {
 			privateKey: false
 		}
 	): Promise<JsonWebKeyPair> {
-		return new JsonWebKeyPair(
-			this.id,
-			this.controller,
-			this.publicKeyJwk,
-			options.privateKey ? this.privateKeyJwk : undefined
-		);
+		if(options.privateKey) {
+			return new JsonWebKeyPair(
+				this.id,
+				this.controller,
+				this.publicKeyJwk,
+				this.privateKeyJwk
+			);
+		} else {
+			return new JsonWebKeyPair(
+				this.id,
+				this.controller,
+				this.publicKeyJwk
+			);
+		}
 	}
 
 	/**

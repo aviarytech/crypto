@@ -43,11 +43,14 @@ describe('Secp256k1 KeyPair tests', () => {
 		expect(jwk).to.have.property('publicKeyJwk');
 		expect(jwk.publicKeyJwk).to.have.property('x');
 		expect(jwk.publicKeyJwk).to.have.property('y');
-
+	});
+	
+	test('exports as JWK w/o private key', async () => {
+		const keypair = await EcdsaSecp256k1KeyPair.generate();
 		const jwkJustPub = await keypair.export();
 		expect(jwkJustPub).to.have.property('publicKeyJwk');
 		expect(jwkJustPub.publicKeyJwk).to.have.property('x');
 		expect(jwkJustPub.publicKeyJwk).to.have.property('y');
-		expect(jwkJustPub).to.not.have.property('privateKeyJwk');
+		expect(jwkJustPub.privateKeyJwk).toBeUndefined();
 	});
 });
