@@ -1,6 +1,6 @@
 import jsonld from "jsonld";
 import { Buffer } from 'buffer/index.js';
-import { sha256buffer } from "$lib";
+import { sha256buffer } from "../utils/sha256.js";
 
 
 export async function canonize(input: any, { documentLoader }: any) {

@@ -1,4 +1,4 @@
-import { sha256Uint8Array } from "./utils/sha256";
+import { sha256Uint8Array } from "./utils/sha256.js";
 
 export const normalize = (str: string): string => {
   return (str || '').normalize('NFKD');
