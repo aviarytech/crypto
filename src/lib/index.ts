@@ -16,3 +16,4 @@ export * from '$lib/LDP/proof.js';
 export * from '$lib/utils/encoding.js';
 export * from '$lib/utils/sha256.js';
 export * from '$lib/constants.js';
+export { entropyToMnemonic, mnemonicToEntropy } from '$lib/mnemonic.js'
