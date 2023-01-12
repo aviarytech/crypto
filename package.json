@@ -14,7 +14,7 @@
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
-		"test": "vitest",
+		"test": "vitest mnemonic",
 		"shipit": "npm run package && pushd package && npm publish && popd"
 	},
 	"type": "module",
@@ -22,15 +22,17 @@
 		"@noble/secp256k1": "^1.6.3",
 		"@stablelib/aes-kw": "^1.0.1",
 		"@stablelib/ed25519": "^1.0.2",
+		"@stablelib/hmac": "^1.0.1",
+		"@stablelib/pbkdf2": "^1.0.1",
 		"@stablelib/random": "^1.0.2",
 		"@stablelib/sha256": "^1.0.1",
+		"@stablelib/sha512": "^1.0.1",
 		"@stablelib/x25519": "^1.0.1",
 		"@stablelib/xchacha20poly1305": "^1.0.1",
 		"b58": "^4.0.3",
 		"buffer": "^6.0.3",
 		"jose": "^4.9.0",
-		"jsonld": "^5.2.0",
-		"multiformats": "^10.0.0"
+		"jsonld": "^5.2.0"
 	},
 	"devDependencies": {
 		"@digitalbazaar/ed25519-signature-2020": "^5.0.0",
@@ -55,6 +57,6 @@
 		"tslib": "^2.3.1",
 		"typescript": "^4.7.4",
 		"vite": "^4.0.3",
-		"vitest": "^0.26.1"
+		"vitest": "^0.27.1"
 	}
 }

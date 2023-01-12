@@ -1,8 +1,14 @@
+import { deriveKey } from "@stablelib/pbkdf2"
+import { SHA512 } from "@stablelib/sha512"
+import { utf8 } from "./utils/encoding.js";
 import { sha256Uint8Array } from "./utils/sha256.js";
 
-export const normalize = (str: string): string => {
-  return (str || '').normalize('NFKD');
-};  
+function normalize(str: string) {
+  const norm = str.normalize('NFKD');
+  const words = norm.split(' ');
+  if (![12, 15, 18, 21, 24].includes(words.length)) throw new Error('Invalid mnemonic');
+  return { nfkd: norm, words };
+}
 
 export const hexToBytes = (hexString: string): Uint8Array => {
   const pairs = hexString.match(/.{1,2}/g)
@@ -38,7 +44,7 @@ export const deriveChecksumBits = (entropy: Uint8Array): string => {
 };
 
 export function mnemonicToEntropy(mnemonic: string): string {
-  var seedWords = normalize(mnemonic).split(' ');
+  var seedWords = normalize(mnemonic).nfkd.split(' ');
 
   if (seedWords.length % 3 !== 0) {
       throw new Error('INVALID_MNEMONIC');
@@ -102,6 +108,11 @@ export const entropyToMnemonic = (input: string | Uint8Array): string => {
 
   return seedWords.join(' ');
 };
+
+export const mnemonicToSeed = (mnemonic: string, passphrase: string = ''): string => {
+  const bytes = deriveKey(SHA512, utf8.encode(normalize(mnemonic).nfkd), utf8.encode(`mnemonic${passphrase}`), 2048, 64)
+  return bytesToHex(bytes)
+}
 
 export const words = [
   "abandon",

@@ -1,6 +1,5 @@
 // @ts-ignore
 import b58 from 'b58';
-import { base58btc } from "multiformats/bases/base58"
 import { Buffer } from 'buffer/index.js';
 
 // multibase base58-btc header
@@ -33,7 +32,7 @@ export const utf8 = {
 	},
 	decode: (encoded: Uint8Array): string => {
 		return new TextDecoder().decode(encoded);
-	} 
+	}
 }
 
 export const base64url = {
