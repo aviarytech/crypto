@@ -15,6 +15,7 @@ describe('HD tests', () => {
     for (const vector of vectors) {
         const key = seedToHD(vector[0])
         const derived = deriveKeyAtPathFromMaster(key, vector[1])
+        console.error(derived)
         expect(derived).to.be.equal(vector[2])
     }
   })
