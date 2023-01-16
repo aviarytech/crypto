@@ -3,22 +3,15 @@ import { describe, expect, test } from "vitest";
 import vectors from '../fixtures/HD.json'
 
 describe('HD tests', () => {
-
-  // test('can convert hex seed to xpriv', () => {
-  //   for (const vector of vectors) {
-  //       const key = seedToHD(vector[0])
-  //       expect(key).to.be.equal(vector[2])
-  //   }
-  // })
-
-  test('can convert hex seed to xpriv', () => {
-    for (const vector of vectors) {
+  let i = 0;
+  for (const vector of vectors) {
+    test(`${i}: can convert hex seed (${vector[0].slice(0, 12)}...) to xpriv (${vector[2].slice(0, 12)}...) with path ${vector[1]}`, () => {
         const key = seedToHD(vector[0])
         const derived = deriveKeyAtPathFromMaster(key, vector[1])
-        console.error(derived)
         expect(derived).to.be.equal(vector[2])
-    }
-  })
+    })
+    i++
+  }
 })
 
 
