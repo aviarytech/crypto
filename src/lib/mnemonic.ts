@@ -79,16 +79,11 @@ export function mnemonicToEntropy(mnemonic: string): string {
   return bytesToHex(Uint8Array.from(entropy));
 }
 
+// takes in 16 to 32 bytes of entropy and creates a mnemonic seed phrase
 export const entropyToMnemonic = (input: string | Uint8Array): string => {
   const entropy = typeof input === 'string' ? hexToBytes(input) : input;
 
-  if (entropy.length < 16) {
-      throw new Error('INVALID_ENTROPY');
-  }
-  if (entropy.length > 32) {
-      throw new Error('INVALID_ENTROPY');
-  }
-  if (entropy.length % 4 !== 0) {
+  if (entropy.length < 16 || entropy.length > 32 || entropy.length % 4 !== 0) {
       throw new Error('INVALID_ENTROPY');
   }
 
