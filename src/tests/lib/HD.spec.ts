@@ -1,29 +1,26 @@
 import { deriveKeyAtPathFromMaster, seedToHD } from "$lib/keypairs/HD";
 import { describe, expect, test } from "vitest";
-import vectors from '../fixtures/HD.json'
+import hdFixtures from '../fixtures/HD.json'
+import { mnemonicToSeed } from "$lib/mnemonic";
+import { MULTICODEC_SECP256K1_PUB_HEADER, multibase } from "$lib";
 
 describe('HD tests', () => {
   let i = 0;
-  for (const vector of vectors) {
+  for (const vector of hdFixtures.secp256k1) {
     test(`${i}: can convert hex seed (${vector[0].slice(0, 12)}...) to xpriv (${vector[2].slice(0, 12)}...) with path ${vector[1]}`, () => {
         const key = seedToHD(vector[0])
         const derived = deriveKeyAtPathFromMaster(key, vector[1])
-        expect(derived).to.be.equal(vector[2])
+        expect(derived.privateExtendedKey).to.be.equal(vector[2])
     })
     i++
   }
+
+	test('can recover from impervious backup', () => {
+		const seedPhrase = 'flower crew machine multiply talk collect chest theory diary exit deputy ecology move twelve romance fire dial enhance decrease february bachelor dose reflect major';
+		const seed = mnemonicToSeed(seedPhrase)
+		const key = seedToHD(seed)
+    const derived = deriveKeyAtPathFromMaster(key, "m/0")
+
+		expect(multibase.encode(MULTICODEC_SECP256K1_PUB_HEADER, derived.publicKey!)).toEqual('zQmNhr3DC5sMwfLJrJ3bnJFgrJPxaMtXZA6213qAARp9eAs')
+	})
 })
-
-
-// [
-//   "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542",
-//   "xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U"
-// ],
-// [
-//   "4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be",
-//   "xprv9s21ZrQH143K25QhxbucbDDuQ4naNntJRi4KUfWT7xo4EKsHt2QJDu7KXp1A3u7Bi1j8ph3EGsZ9Xvz9dGuVrtHHs7pXeTzjuxBrCmmhgC6"
-// ],
-// [
-//   "3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678",
-//   "xprv9s21ZrQH143K48vGoLGRPxgo2JNkJ3J3fqkirQC2zVdk5Dgd5w14S7fRDyHH4dWNHUgkvsvNDCkvAwcSHNAQwhwgNMgZhLtQC63zxwhQmRv"
-// ]

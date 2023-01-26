@@ -5,9 +5,9 @@ import { base64url, multibase, base58, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import { LinkedDataProof } from '$lib/LDP/proof.js';
-import { Buffer } from 'buffer/index.js';
 import type { DocumentLoader } from '$lib/interfaces.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
+import { HDKey } from 'micro-ed25519-hdkey';
 
 export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 	public proofValue: string;
@@ -22,7 +22,9 @@ export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 		domain?: string
 	) {
 		super(type, proofPurpose, verificationMethod, challenge, domain, created);
-		this.proofValue = proofValue;
+		if (proofValue) {
+			this.proofValue = proofValue;
+		}
 	}
 
 	toJSON() {
@@ -43,6 +45,24 @@ export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 		}
 		return val;
 	}
+}
+
+// TODO
+// export const getNextKey = (hd: HDKey, path: string, nextLevel = false) => {
+// 	if (nextLevel) {
+// 		return hd.derive(path + "/0'");
+// 	}
+// 	let levels = path.split('/')
+// 	levels[levels.length-1].replace(/\d+/, (val) => (parseInt(val)+1).toString())
+// 	return hd.derive(levels.join('/'))
+// }
+
+export const deriveKeyFromSeed = (seed: string, path: string) => {
+	const hd = HDKey.fromMasterSeed(seed);
+	return deriveKeyFromHd(hd, path);
+}
+export const deriveKeyFromHd = (hd: HDKey, path: string) => {
+	return hd.derive(path);
 }
 
 @staticImplements<BaseKeyPairStatic>()
@@ -124,6 +144,16 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 			options.privateKeyMultibase
 		);
 	};
+
+	static fromHD = (hd: HDKey) => {
+		const publicKeyMultibase = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, hd.publicKeyRaw)
+		return new Ed25519VerificationKey2020(
+			`did:key:${publicKeyMultibase}#${publicKeyMultibase}`,
+			`did:key:${publicKeyMultibase}`,
+			publicKeyMultibase,
+			multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, hd.privateKey)
+		)
+	}
 	
 	static fromBase58 = async (options: {id?: string, controller?: string, publicKeyBase58: string, privateKeyBase58?: string}) => {
 		let publicKeyMultibase, privateKeyMultibase;

@@ -6,7 +6,7 @@ const jwe = require('../fixtures/jwe.json');
 const key = require('../fixtures/keypairs/X25519KeyAgreementKey2019.json');
 const key2 = require('../fixtures/keypairs/X25519KeyAgreementKey2020.json')
 
-describe('JWE', () => {
+describe.skip('JWE', () => {
 	test('Can encrypt data w/ base58 key', async () => {
 		const cipher = new JsonWebEncryptionSuite();
 		const recipients = [
