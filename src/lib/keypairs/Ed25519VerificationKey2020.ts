@@ -1,16 +1,16 @@
 
-import * as ed25519 from '@stablelib/ed25519';
-import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
-import { base64url, multibase, base58, MULTICODEC_ED25519_PUB_HEADER, MULTICODEC_ED25519_PRIV_HEADER, MULTIBASE_BASE58BTC_HEADER } from '$lib/utils/encoding.js';
-import { staticImplements } from '$lib/utils/staticImplements.js';
-import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 import { LinkedDataProof } from '$lib/LDP/proof.js';
 import type { DocumentLoader } from '$lib/interfaces.js';
+import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
+import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { MULTICODEC_ED25519_PRIV_HEADER, MULTICODEC_ED25519_PUB_HEADER, base58, base64url, multibase } from '$lib/utils/encoding.js';
+import { staticImplements } from '$lib/utils/staticImplements.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
+import * as ed25519 from '@stablelib/ed25519';
 import { HDKey } from 'micro-ed25519-hdkey';
 
 export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
-	public proofValue: string;
+	public proofValue: string | undefined;
 
 	constructor(
 		type: string,
@@ -91,11 +91,7 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		return {
 			async verify({ data, signature }: { data: Uint8Array, signature: Uint8Array }): Promise<boolean> {
 				let verified = false;
-				try {
-					verified = ed25519.verify(publicKey, data, signature);
-				} catch (e) {
-					// console.error('An error occurred when verifying signature: ', e);
-				}
+				verified = ed25519.verify(publicKey, data, signature);
 				return verified;
 			}
 		};
@@ -111,6 +107,7 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		this.privateKeyMultibase = privateKeyMultibase;
 		this.publicKey = multibase.decode(MULTICODEC_ED25519_PUB_HEADER, publicKeyMultibase);
 		if (privateKeyMultibase) {
+			console.log(privateKeyMultibase)
 			this.privateKey = multibase.decode(MULTICODEC_ED25519_PRIV_HEADER, privateKeyMultibase);
 			this.sign = this.signer(this.privateKey).sign
 		}
@@ -217,8 +214,10 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		if (!this.privateKey) {
 			throw new Error("No privateKey, Can't create proof");
 		}
-		let proof = new Ed25519Signature2020LinkedDataProof(
-			this.SUITE_TYPE, purpose, this.id, null, null, options ? options.challenge : null, options? options.domain : null
+		const date = new Date().toISOString();
+		const proof = new Ed25519Signature2020LinkedDataProof(
+			this.SUITE_TYPE, purpose, this.id, date.slice(0, date.length - 5) + 'Z',
+			undefined, options?.challenge, options?.domain
 		)
 
 		// create data to sign
@@ -233,5 +232,42 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		proof.proofValue = multibase.encode(new Uint8Array([]), sig)
 		
 		return proof.toJSON()
+	}
+
+	async verifyProof(
+		documentProof: Ed25519Signature2020LinkedDataProof,
+		document: any,
+		documentLoader: DocumentLoader
+	) {
+		const {proof, ...doc} = document;
+		if(!documentProof.toJSON) {
+			documentProof = new Ed25519Signature2020LinkedDataProof(documentProof.type,
+				documentProof.proofPurpose, documentProof.verificationMethod, documentProof.created,
+				documentProof.proofValue, documentProof.challenge, documentProof.domain)
+		}
+		try {
+			const verifyData = await createVerifyData({
+				document: doc,
+				proof: { '@context': doc['@context'], ...documentProof.toJSON() },
+				documentLoader
+			})
+			const verified = await this.verify!({
+				data: Uint8Array.from(verifyData),
+				signature: Uint8Array.from(multibase.decode(new Uint8Array([]), documentProof.proofValue ?? ''))
+			});
+			if (!verified) {
+				throw new Error('Invalid signature.');
+			}
+
+			const purposeValid = documentProof.validate();
+
+			if (!purposeValid) {
+				throw new Error('Proof verified but not valid');
+			}
+
+			return { verified: true };
+		} catch (error: any) {
+			return { verified: false, errors: [error.message] };
+		}
 	}
 }

@@ -1,0 +1,9 @@
+{
+	"type": "Ed25519Signature2020",
+	"proofPurpose": "authentication",
+	"verificationMethod": "did:key:z6MkhE7zSTFdUbBDjfzX4zYV1DPMG8QPd5S723xdAyUF3rgR#z6MkhE7zSTFdUbBDjfzX4zYV1DPMG8QPd5S723xdAyUF3rgR",
+	"created": "2023-01-26T04:37:12Z",
+	"proofValue": "z5NQPWEwXRv5J4JxdRqMGESWw5vAFuWtKp2umvmsvA9nKDsEnFom1jPEXVhKaey8gMh6yYfiCQGYtXnCrUzyTcsAT",
+	"challenge": "72Jd0frtFmvKjQV65BFz4",
+	"domain": "https://localhost:51443"
+}

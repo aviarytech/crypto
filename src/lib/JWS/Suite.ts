@@ -1,10 +1,10 @@
-import jsonld from 'jsonld';
 import { Buffer } from 'buffer/index.js';
 import type { DocumentLoader } from '$lib';
-import { LinkedDataProof } from '$lib/LDP/proof.js';
 import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
-import { sha256buffer } from '$lib/utils/sha256.js';
+import { LinkedDataProof } from '$lib/LDP/proof.js';
 import { base64url } from '$lib/utils/encoding.js';
+import jsonld from 'jsonld';
+import { sha256buffer } from '$lib/utils/sha256.js';
 
 export { createJWSSigner } from '$lib/JWS/createSigner.js';
 export { createJWSVerifier } from '$lib/JWS/createVerifier.js';
@@ -77,7 +77,7 @@ export class JsonWebSignature2020Suite {
 		}
 
 		const { document } = await documentLoader(verificationMethod);
-		const result = document.verificationMethod.find((v) => v.id === verificationMethod);
+		const result = document.verificationMethod.find((v: { id: string; }) => v.id === verificationMethod);
 		if (!result || !result.controller) {
 			throw new Error(`Verification method ${verificationMethod} not found.`);
 		}

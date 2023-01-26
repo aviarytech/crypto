@@ -32,7 +32,7 @@ export class LinkedDataProof {
 		this.verificationMethod = verificationMethod;
 	}
 
-	validate?(maxTimestampDelta?: number) {
+	validate(maxTimestampDelta?: number) {
 		if (maxTimestampDelta && maxTimestampDelta !== Infinity) {
 			const expected = new Date().getTime();
 			const delta = maxTimestampDelta * 1000;

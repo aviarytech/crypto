@@ -1,7 +1,6 @@
-import jsonld from "jsonld";
 import { Buffer } from 'buffer/index.js';
+import jsonld from "jsonld";
 import { sha256buffer } from "../utils/sha256.js";
-
 
 export async function canonize(input: any, { documentLoader }: any) {
   return await jsonld.canonize(input, {
@@ -27,8 +26,10 @@ export async function createVerifyData({ document, proof, documentLoader }: any)
   const c14nProofOptions = await canonizeProof(proof, {
     documentLoader
   });
+  console.log(c14nProofOptions)
   const c14nDocument = await canonize(document, {
     documentLoader    
   });
+  console.log(c14nDocument)
   return Buffer.concat([sha256buffer(c14nProofOptions), sha256buffer(c14nDocument)]);
 }

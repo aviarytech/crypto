@@ -1,16 +1,15 @@
-import { deriveKeyFromSeed, Ed25519VerificationKey2020 } from '$lib/keypairs/Ed25519VerificationKey2020';
-import { base64url, multibase, MULTICODEC_ED25519_PRIV_HEADER, MULTICODEC_ED25519_PUB_HEADER } from '$lib/utils/encoding';
-
 import * as vc from '@digitalbazaar/vc';
+
+import { Ed25519VerificationKey2020, deriveKeyFromSeed } from '$lib/keypairs/Ed25519VerificationKey2020';
+import { MULTICODEC_ED25519_PRIV_HEADER, MULTICODEC_ED25519_PUB_HEADER, base64url, multibase } from '$lib/utils/encoding';
+import { describe, expect, test } from 'vitest';
+
+import { HDKey } from 'micro-ed25519-hdkey';
+import { bytesToHex } from '@noble/hashes/utils';
 import { Ed25519VerificationKey2020 as dbKey } from '@digitalbazaar/ed25519-verification-key-2020';
 import { Ed25519Signature2020 as dbSuite } from '@digitalbazaar/ed25519-signature-2020';
-import fixtures from "../fixtures/HD.json"
-
-import { describe, expect, test } from 'vitest';
 import { documentLoader } from '../fixtures/documentLoader';
-import { bytesToHex } from '@noble/hashes/utils';
-import { HDKey } from 'micro-ed25519-hdkey';
-import { mnemonicToSeed } from '$lib/mnemonic';
+import fixtures from "../fixtures/HD.json";
 
 describe('HDKey', () => {
 	let i = 0;
@@ -105,6 +104,73 @@ describe('Ed25519VerificationKey2020', () => {
 		expect(result).to.have.property('proofValue')
 	});
 
+	test(`Can verify proof case-1`, async () => {
+		const credential = require(`../fixtures/credentials/case-1.json`);
+		const ed25519 = require('../fixtures/keypairs/Ed25519VerificationKey2020.json');
+		const key = new Ed25519VerificationKey2020(
+			ed25519.id,
+			ed25519.controller,
+			ed25519.publicKeyMultibase,
+			ed25519.privateKeyMultibase
+		);
+
+		const proof = await key.createProof(
+			credential,
+			'assertionMethod',
+			documentLoader,
+			{challenge: 'challenge123'}
+		);
+
+		const result = await key.verifyProof(proof, credential, documentLoader)
+		expect(result.verified).toBeTruthy()
+	});
+
+	test.only(`Can verify proof case-2`, async () => {
+		const proof = require(`../fixtures/proofs/case-2.json`);
+		const document = require(`../fixtures/documents/case-2.json`)
+		const ed25519 = require('../fixtures/keypairs/case-2.json');
+		const key = new Ed25519VerificationKey2020(
+			ed25519.id,
+			ed25519.controller,
+			ed25519.publicKeyMultibase,
+			ed25519.privateKeyMultibase
+		);
+
+		const result = await key.verifyProof(proof, document, documentLoader)
+		console.log(result)
+		expect(result.verified).toBeTruthy()
+	});
+
+	test(`debug`, async () => {
+		const ed25519 = require('../fixtures/keypairs/Ed25519VerificationKey2020.json');
+		const key = new Ed25519VerificationKey2020(
+			ed25519.id,
+			ed25519.controller,
+			ed25519.publicKeyMultibase,
+			ed25519.privateKeyMultibase
+		);
+		const p = {
+			'@context': [
+				'https://www.w3.org/2018/credentials/v1',
+				"https://w3id.org/security/suites/ed25519-2020/v1"
+			],
+			holder: key.controller,
+			type: ['VerifiablePresentation'],
+			verifiableCredential: []
+		};
+		let proof = await key.createProof(p, 'authentication', documentLoader, { challenge: '72Jd0frtFmvKjQV65BFz4', domain: 'https://localhost:51433'})
+		expect(proof.challenge).toBe('72Jd0frtFmvKjQV65BFz4')
+		let verify = await key.verifyProof(proof, p, documentLoader)
+		expect(verify.verified).toBeTruthy()
+		// {
+		// 	type: 'vc-ld',
+		// 	suite: key,
+		// 	challenge: 'challenge',
+		// 	domain: 'domain',
+		// 	documentLoader
+		// });
+	})
+
 	test(`Can create proof that verifies with digital bazaar`, async () => {
 		const ed25519 = {...require('../fixtures/keypairs/Ed25519VerificationKey2020.json')};
 		const credential = {...require(`../fixtures/credentials/case-1.json`), issuer: {id: ed25519.controller}};
@@ -119,11 +185,11 @@ describe('Ed25519VerificationKey2020', () => {
 			credential,
 			'assertionMethod',
 			documentLoader,
-			{challenge: 'challenge123'}
+			{challenge: 'challenge123', domain: 'http://domain.com'}
 		);
 
 		expect(result.challenge).to.be.equal('challenge123');
-		expect(result).to.not.have.property('domain');
+		expect(result.domain).to.be.equal('http://domain.com');
 		expect(result).to.have.property('proofValue');
 		const keyPair = new dbKey({
 			id: ed25519.id,
@@ -134,6 +200,7 @@ describe('Ed25519VerificationKey2020', () => {
 		const res = await vc.verifyCredential({
 			credential: {...credential, proof: result},
 			challenge: 'challenge123',
+			domain: 'http://domain.com',
 			suite,
 			documentLoader
 		});

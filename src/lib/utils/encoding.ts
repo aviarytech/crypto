@@ -1,6 +1,6 @@
+import { Buffer } from 'buffer/index.js';
 // @ts-ignore
 import b58 from 'b58';
-import { Buffer } from 'buffer/index.js';
 
 // multibase base58-btc header
 export const MULTIBASE_BASE58BTC_HEADER = 'z';
@@ -60,9 +60,9 @@ export const multibase = {
 	encode: (header: Uint8Array, val: Uint8Array): string => {
 		let mcBytes;
 		if (header.length > 0) {
-		mcBytes = new Uint8Array(header.length + val.length);
-		mcBytes.set(header)
-		mcBytes.set(val, header.length)
+			mcBytes = new Uint8Array(header.length + val.length);
+			mcBytes.set(header)
+			mcBytes.set(val, header.length)
 		}
 		return MULTIBASE_BASE58BTC_HEADER + base58.encode(mcBytes ?? val)
 	},

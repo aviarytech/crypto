@@ -1,6 +1,6 @@
-import { base64url } from '$lib/utils/encoding.js';
-import type { JWA_ALG } from '$lib/constants.js';
 import { Buffer } from 'buffer/index.js';
+import type { JWA_ALG } from '$lib/constants.js';
+import { base64url } from '$lib/utils/encoding.js';
 
 export type Signer = {
 	sign: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;
@@ -32,7 +32,6 @@ export const createJWSSigner = (
 			const encodedPayload = base64url.encode(
 				data instanceof Uint8Array ? data : Buffer.from(JSON.stringify(data))
 			);
-			console.error(data);
 			const toBeSigned = options.detached
 				? new Uint8Array(
 						Buffer.concat([Buffer.from(encodedHeader, 'base64'), Buffer.from('.', 'utf-8'), data])
