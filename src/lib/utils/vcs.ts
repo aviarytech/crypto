@@ -26,10 +26,8 @@ export async function createVerifyData({ document, proof, documentLoader }: any)
   const c14nProofOptions = await canonizeProof(proof, {
     documentLoader
   });
-  console.log(c14nProofOptions)
   const c14nDocument = await canonize(document, {
     documentLoader    
   });
-  console.log(c14nDocument)
   return Buffer.concat([sha256buffer(c14nProofOptions), sha256buffer(c14nDocument)]);
 }
