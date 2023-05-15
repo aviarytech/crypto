@@ -28,7 +28,7 @@ describe('HDKey', () => {
 describe('Ed25519VerificationKey2020', () => {
 	test('fromBase58', async () => {
 		const key = 'ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7';
-		const keypair = Ed25519VerificationKey2020.fromBase58({publicKeyBase58: key})
+		const keypair = Ed25519VerificationKey2020.fromBase58({ publicKeyBase58: key })
 	})
 	test('resolves as JWK', async () => {
 		const ed25519 = require('../fixtures/keypairs/Ed25519VerificationKey2020.json');
@@ -76,11 +76,30 @@ describe('Ed25519VerificationKey2020', () => {
 	})
 
 	test('can create from hd key', async () => {
-		const hd =  HDKey.fromMasterSeed('fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542')
+		const hd = HDKey.fromMasterSeed('fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542')
 		const key = Ed25519VerificationKey2020.fromHD(hd)
 		expect(key.publicKey.length).toEqual(32)
+		expect(key.privateKey.length).toEqual(64)
 		expect(key.controller).toEqual('did:key:z6Mkp92myXtWkQYxhFmDxqkTwURYZAEjUm9iAuZxyjYzmfSy')
 	})
+
+	test('can create valid proof from hd key', async () => {
+		const hd = HDKey.fromMasterSeed('fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542')
+		const credential = require(`../fixtures/credentials/case-1.json`);
+		const key = Ed25519VerificationKey2020.fromHD(hd)
+		expect(key.publicKey.length).toEqual(32)
+		expect(key.privateKey.length).toEqual(64)
+		expect(key.controller).toEqual('did:key:z6Mkp92myXtWkQYxhFmDxqkTwURYZAEjUm9iAuZxyjYzmfSy')
+		const result = await key.createProof(
+			credential,
+			'assertionMethod',
+			documentLoader,
+			{ challenge: 'challenge123' }
+		);
+		const verification = await key.verifyProof(result, credential, documentLoader)
+		expect(verification.verified).toBeTruthy()
+	})
+
 
 	test(`Can create proof w/ challenge`, async () => {
 		const credential = require(`../fixtures/credentials/case-1.json`);
@@ -96,7 +115,7 @@ describe('Ed25519VerificationKey2020', () => {
 			credential,
 			'assertionMethod',
 			documentLoader,
-			{challenge: 'challenge123'}
+			{ challenge: 'challenge123' }
 		);
 
 		expect(result.challenge).to.be.equal('challenge123');
@@ -118,14 +137,14 @@ describe('Ed25519VerificationKey2020', () => {
 			credential,
 			'assertionMethod',
 			documentLoader,
-			{challenge: 'challenge123'}
+			{ challenge: 'challenge123' }
 		);
 
 		const result = await key.verifyProof(proof, credential, documentLoader)
 		expect(result.verified).toBeTruthy()
 	});
 
-	test.only(`Can verify proof case-2`, async () => {
+	test(`Can verify proof case-2`, async () => {
 		const proof = require(`../fixtures/proofs/case-2.json`);
 		const document = require(`../fixtures/documents/case-2.json`)
 		const ed25519 = require('../fixtures/keypairs/case-2.json');
@@ -158,7 +177,7 @@ describe('Ed25519VerificationKey2020', () => {
 			type: ['VerifiablePresentation'],
 			verifiableCredential: []
 		};
-		let proof = await key.createProof(p, 'authentication', documentLoader, { challenge: '72Jd0frtFmvKjQV65BFz4', domain: 'https://localhost:51433'})
+		let proof = await key.createProof(p, 'authentication', documentLoader, { challenge: '72Jd0frtFmvKjQV65BFz4', domain: 'https://localhost:51433' })
 		expect(proof.challenge).toBe('72Jd0frtFmvKjQV65BFz4')
 		let verify = await key.verifyProof(proof, p, documentLoader)
 		expect(verify.verified).toBeTruthy()
@@ -172,8 +191,8 @@ describe('Ed25519VerificationKey2020', () => {
 	})
 
 	test(`Can create proof that verifies with digital bazaar`, async () => {
-		const ed25519 = {...require('../fixtures/keypairs/Ed25519VerificationKey2020.json')};
-		const credential = {...require(`../fixtures/credentials/case-1.json`), issuer: {id: ed25519.controller}};
+		const ed25519 = { ...require('../fixtures/keypairs/Ed25519VerificationKey2020.json') };
+		const credential = { ...require(`../fixtures/credentials/case-1.json`), issuer: { id: ed25519.controller } };
 		const key = new Ed25519VerificationKey2020(
 			ed25519.id,
 			ed25519.controller,
@@ -185,7 +204,7 @@ describe('Ed25519VerificationKey2020', () => {
 			credential,
 			'assertionMethod',
 			documentLoader,
-			{challenge: 'challenge123', domain: 'http://domain.com'}
+			{ challenge: 'challenge123', domain: 'http://domain.com' }
 		);
 
 		expect(result.challenge).to.be.equal('challenge123');
@@ -198,7 +217,7 @@ describe('Ed25519VerificationKey2020', () => {
 		});
 		const suite = new dbSuite({ key: keyPair });
 		const res = await vc.verifyCredential({
-			credential: {...credential, proof: result},
+			credential: { ...credential, proof: result },
 			challenge: 'challenge123',
 			domain: 'http://domain.com',
 			suite,

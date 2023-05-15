@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer/index.js';
+import { Buffer } from 'buffer';
 // @ts-ignore
 import b58 from 'b58';
 

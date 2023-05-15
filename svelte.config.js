@@ -6,7 +6,10 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		alias: {
+			buffer: 'buffer/'
+		},
 		// package: {
 		// 	exports: (file) => file.includes('index.ts')
 		// }
@@ -16,7 +19,7 @@ const config = {
 		// 			'@stablelib/ed25519',
 		// 			'@stablelib/x25519',
 		// 			'@stablelib/xchacha20poly1305',
-		// 			'buffer/index.js',
+		// 			'buffer',
 		// 			'b58',
 		// 			'@stablelib/aes-kw',
 		// 			'jsonld',

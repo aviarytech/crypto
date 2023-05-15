@@ -1,10 +1,10 @@
 import * as secp from '@noble/secp256k1';
-import { Buffer } from 'buffer/index.js';
-
+import { Buffer } from 'buffer';
+import { HDKey } from "@scure/bip32"
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { staticImplements } from '$lib/utils/staticImplements.js';
 import { sha256Uint8Array } from '$lib/utils/sha256.js';
-import { base58, base64url, multibase, MULTICODEC_ED25519_PRIV_HEADER } from '$lib/utils/encoding.js';
+import { base58, base64url, multibase, MULTICODEC_SECP256K1_PUB_HEADER } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
 
 export interface EcdsaSecp256k1VerificationKey2019 extends BaseKeyPair {
@@ -66,7 +66,7 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 	static generate = async () => {
 		const privKey = secp.utils.randomPrivateKey();
 		const pubKey = secp.getPublicKey(privKey);
-		const fingerprint = multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, pubKey)
+		const fingerprint = multibase.encode(MULTICODEC_SECP256K1_PUB_HEADER, pubKey)
 		const controller = `did:key:${fingerprint}`;
 		const id = `${controller}#${fingerprint}`;
 
@@ -76,6 +76,17 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 	static from = async (k: EcdsaSecp256k1VerificationKey2019, options?: {}) => {
 		return new EcdsaSecp256k1KeyPair(k.id, k.controller, k.publicKeyBase58, k.privateKeyBase58);
 	};
+
+	static fromXpub = async (xpub: string) => {
+		const hd = HDKey.fromExtendedKey(xpub);
+		if (hd.publicKey) {
+			const fingerprint = multibase.encode(MULTICODEC_SECP256K1_PUB_HEADER, hd.publicKey)
+			const controller = `did:key:${fingerprint}`;
+			const id = `${controller}#${fingerprint}`;
+			return new EcdsaSecp256k1KeyPair(id, controller, base58.encode(hd.publicKey));
+		}
+		return null;
+	}
 
 	static fromJWK = async (k: JsonWebKeyPair) => {
 		const { x, y } = k.publicKeyJwk;

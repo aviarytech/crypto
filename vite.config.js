@@ -15,10 +15,10 @@ const config = {
 			'@stablelib/x25519',
 			'@stablelib/random',
 			'@stablelib/xchacha20poly1305',
-			'buffer/index.js',
+			'buffer',
 			'b58',
 			'@stablelib/aes-kw',
-			'jsonld',
+			'jsonld'
 		]
 	}
 };

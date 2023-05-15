@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { Buffer } from 'buffer/index.js';
+import { Buffer } from 'buffer';
 import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020';
 import { documentLoader } from '../fixtures/documentLoader';
 import { JsonWebSignature2020Suite } from '$lib/JWS/Suite';

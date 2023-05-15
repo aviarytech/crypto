@@ -8,6 +8,7 @@ import { staticImplements } from '$lib/utils/staticImplements.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
 import * as ed25519 from '@stablelib/ed25519';
 import { HDKey } from 'micro-ed25519-hdkey';
+import { Buffer } from 'buffer';
 
 export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 	public proofValue: string | undefined;
@@ -81,7 +82,7 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 
 	signer = (privateKey: Uint8Array) => {
 		return {
-			async sign({ data }: {data: Uint8Array}) {
+			async sign({ data }: { data: Uint8Array }) {
 				return ed25519.sign(privateKey, data);
 			}
 		};
@@ -132,7 +133,7 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		);
 	};
 
-	static from = async (options: {id?: string, controller?: string, publicKeyMultibase: string, privateKeyMultibase?: string}) => {
+	static from = async (options: { id?: string, controller?: string, publicKeyMultibase: string, privateKeyMultibase?: string }) => {
 		return new Ed25519VerificationKey2020(
 			options.id ?? `#${options.publicKeyMultibase.slice(1, 7)}`,
 			options.controller ?? `#${options.publicKeyMultibase.slice(1, 7)}`,
@@ -143,15 +144,17 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 
 	static fromHD = (hd: HDKey) => {
 		const publicKeyMultibase = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, hd.publicKeyRaw)
+		// TODO mayb 32 byte key is wrong should be 33?
+		console.log(hd.publicKey.length)
 		return new Ed25519VerificationKey2020(
 			`did:key:${publicKeyMultibase}#${publicKeyMultibase}`,
 			`did:key:${publicKeyMultibase}`,
 			publicKeyMultibase,
-			multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, hd.privateKey)
+			multibase.encode(MULTICODEC_ED25519_PRIV_HEADER, new Uint8Array(Buffer.concat([hd.chainCode, hd.privateKey,])))
 		)
 	}
-	
-	static fromBase58 = async (options: {id?: string, controller?: string, publicKeyBase58: string, privateKeyBase58?: string}) => {
+
+	static fromBase58 = async (options: { id?: string, controller?: string, publicKeyBase58: string, privateKeyBase58?: string }) => {
 		let publicKeyMultibase, privateKeyMultibase;
 		publicKeyMultibase = multibase.encode(MULTICODEC_ED25519_PUB_HEADER, base58.decode(options.publicKeyBase58))
 		if (options.privateKeyBase58) {
@@ -181,9 +184,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 			privateKey?: boolean;
 			type: 'JsonWebKey2020';
 		} = {
-			privateKey: false,
-			type: 'JsonWebKey2020'
-		}
+				privateKey: false,
+				type: 'JsonWebKey2020'
+			}
 	): Promise<JsonWebKeyPair> {
 		return new JsonWebKeyPair(
 			this.id,
@@ -195,11 +198,11 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 			},
 			options.privateKey && this.privateKey
 				? {
-						kty: 'OKP',
-						crv: 'Ed25519',
-						x: base64url.encode(this.publicKey),
-						d: base64url.encode(this.privateKey)
-				  }
+					kty: 'OKP',
+					crv: 'Ed25519',
+					x: base64url.encode(this.publicKey),
+					d: base64url.encode(this.privateKey)
+				}
 				: undefined
 		);
 	}
@@ -227,9 +230,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		});
 
 		const sig = await this.sign!({ data: verifyData });
-		
+
 		proof.proofValue = multibase.encode(new Uint8Array([]), sig)
-		
+
 		return proof.toJSON()
 	}
 
@@ -238,8 +241,9 @@ export class Ed25519VerificationKey2020 implements BaseKeyPair {
 		document: any,
 		documentLoader: DocumentLoader
 	) {
-		const {proof, ...doc} = document;
-		if(!documentProof.toJSON) {
+		const { proof, ...doc } = document;
+		console.log(documentProof)
+		if (!documentProof.toJSON) {
 			documentProof = new Ed25519Signature2020LinkedDataProof(documentProof.type,
 				documentProof.proofPurpose, documentProof.verificationMethod, documentProof.created,
 				documentProof.proofValue, documentProof.challenge, documentProof.domain)

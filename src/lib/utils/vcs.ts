@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer/index.js';
+import { Buffer } from 'buffer';
 import jsonld from "jsonld";
 import { sha256buffer } from "../utils/sha256.js";
 

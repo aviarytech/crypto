@@ -6,7 +6,7 @@ import * as cipher from '$lib/JWE/xc20p.js';
 
 import { KeyEncryptionKey } from '$lib/JWE/KeyEncryptionKey.js';
 import { stringToUint8Array } from '$lib/utils/sha256.js';
-import { Buffer } from 'buffer/index.js';
+import { Buffer } from 'buffer';
 
 const CIPHER_ALGORITHMS: any = {
 	[cipher.JWE_ENC]: cipher

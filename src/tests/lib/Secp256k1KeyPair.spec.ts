@@ -53,4 +53,10 @@ describe('Secp256k1 KeyPair tests', () => {
 		expect(jwkJustPub.publicKeyJwk).to.have.property('y');
 		expect(jwkJustPub.privateKeyJwk).toBeUndefined();
 	});
+
+	test('from xpub', async () => {
+		const xpub = 'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz';
+		const keypair = await EcdsaSecp256k1KeyPair.fromXpub(xpub);
+		expect(keypair.id).toContain('zQ3shizorZPFPkPVctdMRanf441efDPxWhPu9e4fq5ZwtHN5D')
+	})
 });
