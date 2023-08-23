@@ -3,7 +3,6 @@
  */
 
 import { sha256Uint8Array } from '$lib/utils/sha256.js';
-import { Buffer } from 'buffer';
 
 // only supported algorithm
 const KEY_ALGORITHM = 'ECDH-ES+A256KW';

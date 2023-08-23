@@ -2,7 +2,6 @@ import { AESKW } from '@stablelib/aes-kw';
 import { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { base64url } from '$lib/utils/encoding.js';
 import { deriveKey } from '$lib/JWE/ecdhkdf.js';
-import { Buffer } from 'buffer';
 
 export interface CreateKekOptions {
 	keyData: Uint8Array;

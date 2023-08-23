@@ -1,5 +1,4 @@
 import * as secp from '@noble/secp256k1';
-import { Buffer } from 'buffer';
 import { HDKey } from "@scure/bip32"
 import type { BaseKeyPair, BaseKeyPairStatic } from '$lib/keypairs/BaseKeyPair.js';
 import { staticImplements } from '$lib/utils/staticImplements.js';
@@ -17,6 +16,11 @@ export interface EcdsaSecp256k1VerificationKey2019 extends BaseKeyPair {
 
 @staticImplements<BaseKeyPairStatic>()
 export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 {
+	ALG = 'ES256K';
+	JWA = 'ES256K';
+	algorithm = 'secp256k1';
+	SUITE_TYPE = 'EcdsaSecp256k1VerificationKey2019';
+
 	id: string;
 	type: 'EcdsaSecp256k1VerificationKey2019';
 	controller: string;
@@ -25,7 +29,6 @@ export class EcdsaSecp256k1KeyPair implements EcdsaSecp256k1VerificationKey2019 
 	publicKey: Uint8Array;
 	privateKey?: Uint8Array;
 
-	JWA = 'ES256K';
 
 	async sign({ data }: { data: Uint8Array }): Promise<Uint8Array> {
 		try {

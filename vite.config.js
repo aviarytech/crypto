@@ -15,12 +15,16 @@ const config = {
 			'@stablelib/x25519',
 			'@stablelib/random',
 			'@stablelib/xchacha20poly1305',
-			'buffer',
 			'b58',
 			'@stablelib/aes-kw',
 			'jsonld'
 		]
-	}
+	},
+	// build: {
+	// 	rollupOptions: {
+	// 		plugins: [inject({ Buffer: ['buffer', 'Buffer'] })]
+	// 	}
+	// }
 };
 
 export default config;

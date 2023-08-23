@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 import type { DocumentLoader } from '$lib';
 import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
 import { LinkedDataProof } from '$lib/LDP/proof.js';

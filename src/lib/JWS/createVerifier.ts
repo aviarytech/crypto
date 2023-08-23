@@ -1,5 +1,4 @@
 import type { JWA_ALG } from '$lib/constants.js';
-import { Buffer } from 'buffer';
 
 export type Verifier = {
 	verify: ({ data, signature }: { data: Uint8Array; signature: Uint8Array }) => Promise<boolean>;

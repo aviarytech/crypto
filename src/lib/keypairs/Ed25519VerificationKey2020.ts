@@ -8,7 +8,6 @@ import { staticImplements } from '$lib/utils/staticImplements.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
 import * as ed25519 from '@stablelib/ed25519';
 import { HDKey } from 'micro-ed25519-hdkey';
-import { Buffer } from 'buffer';
 
 export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 	public proofValue: string | undefined;
@@ -69,6 +68,7 @@ export const deriveKeyFromHd = (hd: HDKey, path: string) => {
 @staticImplements<BaseKeyPairStatic>()
 export class Ed25519VerificationKey2020 implements BaseKeyPair {
 	ALG = 'EdDSA'
+	algorithm = 'Ed25519';
 	SUITE_TYPE = 'Ed25519Signature2020'
 
 

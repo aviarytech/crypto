@@ -2,7 +2,6 @@ import { generateKey, JWE_ENC } from '$lib/JWE/xc20p.js';
 import { KeyEncryptionKey } from '$lib/JWE/KeyEncryptionKey.js';
 import { EncryptTransformer } from '$lib/JWE/EncryptTransformer.js';
 import { DecryptTransformer } from '$lib/JWE/DecryptTransformer.js';
-import { Buffer } from 'buffer';
 import type { Header, IJWE } from '$lib/interfaces.js';
 import { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';

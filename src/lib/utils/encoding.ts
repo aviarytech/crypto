@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 // @ts-ignore
 import b58 from 'b58';
 

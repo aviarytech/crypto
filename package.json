@@ -1,6 +1,6 @@
 {
 	"name": "@aviarytech/crypto",
-	"version": "0.0.74",
+	"version": "0.0.82",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com/",
 		"access": "public"
@@ -41,6 +41,8 @@
 		"@digitalbazaar/ed25519-signature-2020": "^5.0.0",
 		"@digitalbazaar/ed25519-verification-key-2020": "^4.1.0",
 		"@digitalbazaar/vc": "^5.0.0",
+		"@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+		"@rollup/plugin-inject": "^5.0.3",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@sveltejs/package": "^1.0.0-next.1",
