@@ -5,6 +5,7 @@ import { staticImplements } from '$lib/utils/staticImplements.js';
 import { sha256Uint8Array } from '$lib/utils/sha256.js';
 import { base58, base64url, multibase, MULTICODEC_SECP256K1_PUB_HEADER } from '$lib/utils/encoding.js';
 import { JsonWebKeyPair, type JsonWebKey2020 } from '$lib/keypairs/JsonWebKey2020.js';
+import { Buffer } from 'buffer/index.js';
 
 export interface EcdsaSecp256k1VerificationKey2019 extends BaseKeyPair {
 	id: string;

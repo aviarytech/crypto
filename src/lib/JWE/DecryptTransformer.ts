@@ -1,7 +1,7 @@
 /*!
  * Copyright (c) 2019-2020 Digital Bazaar, Inc. All rights reserved.
  */
-
+import { Buffer } from 'buffer/index.js'
 import * as cipher from '$lib/JWE/xc20p.js';
 
 import { KeyEncryptionKey } from '$lib/JWE/KeyEncryptionKey.js';

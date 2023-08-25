@@ -1,5 +1,6 @@
 // @ts-ignore
 import b58 from 'b58';
+import { Buffer } from 'buffer/index.js';
 
 // multibase base58-btc header
 export const MULTIBASE_BASE58BTC_HEADER = 'z';

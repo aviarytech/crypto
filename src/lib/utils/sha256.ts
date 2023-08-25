@@ -1,4 +1,5 @@
 import { hash } from '@stablelib/sha256';
+import { Buffer } from 'buffer/index.js';
 
 export const sha256Uint8Array = (val: Uint8Array): Buffer => {
 	return Buffer.from(hash(Buffer.from(val)));

@@ -4,6 +4,7 @@ import { LinkedDataProof } from '$lib/LDP/proof.js';
 import { base64url } from '$lib/utils/encoding.js';
 import jsonld from 'jsonld';
 import { sha256buffer } from '$lib/utils/sha256.js';
+import { Buffer } from 'buffer/index.js';
 
 export { createJWSSigner } from '$lib/JWS/createSigner.js';
 export { createJWSVerifier } from '$lib/JWS/createVerifier.js';

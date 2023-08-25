@@ -19,12 +19,7 @@ const config = {
 			'@stablelib/aes-kw',
 			'jsonld'
 		]
-	},
-	// build: {
-	// 	rollupOptions: {
-	// 		plugins: [inject({ Buffer: ['buffer', 'Buffer'] })]
-	// 	}
-	// }
+	}
 };
 
 export default config;

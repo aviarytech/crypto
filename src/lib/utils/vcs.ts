@@ -1,5 +1,6 @@
 import jsonld from "jsonld";
 import { sha256buffer } from "../utils/sha256.js";
+import { Buffer } from 'buffer/index.js';
 
 export async function canonize(input: any, { documentLoader }: any) {
   return await jsonld.canonize(input, {

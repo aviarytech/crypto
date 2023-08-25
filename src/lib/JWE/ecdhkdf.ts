@@ -1,7 +1,7 @@
 /*!
  * Copyright (c) 2019-2020 Digital Bazaar, Inc. All rights reserved.
  */
-
+import { Buffer } from 'buffer/index.js'
 import { sha256Uint8Array } from '$lib/utils/sha256.js';
 
 // only supported algorithm

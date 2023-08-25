@@ -8,6 +8,7 @@ import { JsonWebKeyPair } from '$lib/keypairs/JsonWebKey2020.js';
 import { base64url } from '$lib/utils/encoding.js';
 import { stringToUint8Array } from '$lib/utils/sha256.js';
 import type { BaseKeyPair } from '$lib/keypairs/BaseKeyPair.js';
+import { Buffer } from 'buffer/index.js';
 
 export class JsonWebEncryptionSuite {
 	public encrypt: any;

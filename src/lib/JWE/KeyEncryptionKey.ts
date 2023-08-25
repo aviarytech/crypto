@@ -2,6 +2,7 @@ import { AESKW } from '@stablelib/aes-kw';
 import { X25519KeyAgreementKey2019 } from '$lib/keypairs/X25519KeyAgreementKey2019.js';
 import { base64url } from '$lib/utils/encoding.js';
 import { deriveKey } from '$lib/JWE/ecdhkdf.js';
+import { Buffer } from 'buffer/index.js';
 
 export interface CreateKekOptions {
 	keyData: Uint8Array;
@@ -84,7 +85,7 @@ export class KeyEncryptionKey {
 				: await KeyPair.from(ephemeralKeyPair.keypair);
 						
 			// "Party U Info"
-			let producerInfo: Uint8Array = epkPair.publicKey;
+			const producerInfo: Uint8Array = epkPair.publicKey;
 
 			// "Party V Info"
 			const consumerInfo = Buffer.from(staticPublicKey.id);
@@ -122,7 +123,7 @@ export class KeyEncryptionKey {
 			// https://tools.ietf.org/html/rfc7748#section-7 pose any issues?
 
 			// "Party U Info"
-			let producerInfo: Uint8Array = epkPair.publicKey;
+			const producerInfo: Uint8Array = epkPair.publicKey;
 			// if (epkPair.publicKey.extractable) {
 			//   const temp = await epkPair.export({ type: "JsonWebKey2020" });
 			//   producerInfo = Uint8Array.from(

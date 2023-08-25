@@ -8,6 +8,7 @@ import { staticImplements } from '$lib/utils/staticImplements.js';
 import { createVerifyData } from '$lib/utils/vcs.js';
 import * as ed25519 from '@stablelib/ed25519';
 import { HDKey } from 'micro-ed25519-hdkey';
+import { Buffer } from 'buffer/index.js';
 
 export class Ed25519Signature2020LinkedDataProof extends LinkedDataProof {
 	public proofValue: string | undefined;
