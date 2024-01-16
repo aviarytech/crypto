@@ -83,7 +83,7 @@ describe('Ed25519VerificationKey2020', () => {
 		expect(key.controller).toEqual('did:key:z6Mkp92myXtWkQYxhFmDxqkTwURYZAEjUm9iAuZxyjYzmfSy')
 	})
 
-	test('can create valid proof from hd key', async () => {
+	test.only('can create valid proof from hd key', async () => {
 		const hd = HDKey.fromMasterSeed('fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542')
 		const credential = require(`../fixtures/credentials/case-1.json`);
 		const key = Ed25519VerificationKey2020.fromHD(hd)
@@ -97,6 +97,7 @@ describe('Ed25519VerificationKey2020', () => {
 			{ challenge: 'challenge123' }
 		);
 		const verification = await key.verifyProof(result, credential, documentLoader)
+		console.log(verification)
 		expect(verification.verified).toBeTruthy()
 	})
 

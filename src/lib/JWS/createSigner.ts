@@ -1,6 +1,5 @@
 import type { JWA_ALG } from '$lib/constants.js';
 import { base64url } from '$lib/utils/encoding.js';
-import { Buffer } from 'buffer/index.js';
 
 export type Signer = {
 	sign: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;

@@ -16,7 +16,10 @@
 			"$lib": ["src/lib"], 
 			"$lib/*": ["src/lib/*"]
 		},
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"types": [
+			"bun-types"
+		]
 	},
 	"include": [
 	  "src/**/*.d.ts",
