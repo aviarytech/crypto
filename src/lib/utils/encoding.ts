@@ -4,18 +4,23 @@ import { Buffer } from 'buffer/index.js';
 
 // multibase base58-btc header
 export const MULTIBASE_BASE58BTC_HEADER = 'z';
-// multicodec ed25519-pub header as varint
-export const MULTICODEC_ED25519_PUB_HEADER = new Uint8Array([0xed, 0x01]);
-// multicodec ed25519-priv header as varint
-export const MULTICODEC_ED25519_PRIV_HEADER = new Uint8Array([0x80, 0x26]);
-// multicodec x25519-pub header as varint
-export const MULTICODEC_X25519_PUB_HEADER = new Uint8Array([0xec, 0x01]);
-// multicodec x25519-priv header as varint
-export const MULTICODEC_X25519_PRIV_HEADER = new Uint8Array([0x82, 0x26]);
-// multicode secp256k1-pub header as varint
-export const MULTICODEC_SECP256K1_PUB_HEADER = new Uint8Array([0xe7, 0x01]);
-// multicode secp256k1-priv header as varint
-export const MULTICODEC_SECP256K1_PRIV_HEADER = new Uint8Array([0x13, 0x01]);
+const HEADERS = {
+	MULTICODEC_ED25519_PUB: new Uint8Array([0xed, 0x01]),
+	MULTICODEC_ED25519_PRIV: new Uint8Array([0x80, 0x26]),
+	MULTICODEC_X25519_PUB: new Uint8Array([0xec, 0x01]),
+	MULTICODEC_X25519_PRIV: new Uint8Array([0x82, 0x26]),
+	MULTICODEC_SECP256K1_PUB: new Uint8Array([0xe7, 0x01]),
+	MULTICODEC_SECP256K1_PRIV: new Uint8Array([0x13, 0x01])
+};
+
+function identifyHeader(val: string) {
+	for (const [headerName, headerValue] of Object.entries(HEADERS)) {
+			if (val.length >= headerValue.length && headerValue.every((byte, index) => byte === val[index])) {
+					return headerName;
+			}
+	}
+	return 'Unknown Header';
+}
 
 export const base64 = {
 	encode: (unencoded: any): string => {
@@ -68,6 +73,28 @@ export const multibase = {
 	},
 	decode: (header: Uint8Array, val: string): Uint8Array => {
 		const mcValue = base58.decode(val.substring(1))
+		for (let i = 0; i < header.length; i++) {
+			if (mcValue[i] !== header[i]) {
+				throw new Error('Multibase value does not have expected header.')
+			}
+		}
+		return mcValue.slice(header.length)
+	},
+	decodeAny: (val: string): Uint8Array => {
+		const mcValue = base58.decode(val.substring(1))
+		const headers = [
+			MULTICODEC_ED25519_PUB_HEADER,
+			MULTICODEC_ED25519_PRIV_HEADER,
+			MULTICODEC_X25519_PUB_HEADER,
+			MULTICODEC_X25519_PRIV_HEADER,
+			MULTICODEC_SECP256K1_PUB_HEADER,
+			MULTICODEC_SECP256K1_PRIV_HEADER
+		];
+
+		const valid = headers.some(header => 
+				val.length >= header.length && 
+				header.every((byte, index) => byte === val[index])
+		);
 		for (let i = 0; i < header.length; i++) {
 			if (mcValue[i] !== header[i]) {
 				throw new Error('Multibase value does not have expected header.')
